@@ -12,7 +12,7 @@ require('dotenv').config()
 
 const app = express();
 
-var corsOptions = {
+let corsOptions = {
     origin: "http://localhost:" + process.env.PORT
 };
 

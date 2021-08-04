@@ -40,9 +40,9 @@ verifyRoles = (req, res, next) => {
     next();
 };
 
-const verifySignUp = {
+const verifyRegistration = {
     verifyNewUser,
     verifyRoles
 };
 
-module.exports = verifySignUp;
+module.exports = verifyRegistration;

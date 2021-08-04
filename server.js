@@ -54,7 +54,7 @@ app.listen(PORT, () => {
 function initialiseRoles() {
     Role.estimatedDocumentCount((err, count) => {
         if (!err && count === 0) {
-            for(const role of Role) {
+            for (const role of Role) {
                 new Role({
                     name: role
                 }).save(err => {
@@ -67,3 +67,4 @@ function initialiseRoles() {
             }
         }
     });
+}

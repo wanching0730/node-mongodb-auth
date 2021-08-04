@@ -2,6 +2,12 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
+// database configuration
+const dbConfig = require ("./config/db.config");
+const db = require("./app/models");
+const Role = db.role;
+const ROLES = db.ROLES;
+
 require('dotenv').config()
 
 const app = express();
@@ -19,10 +25,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // connect to MongoDB
-const dbConfig = require ("./config/db.config");
-const db = require("./app/models");
-const Role = db.role;
-
 db.mongoose
     .connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DB}`, {
         useNewUrlParser: true,
@@ -52,24 +54,16 @@ app.listen(PORT, () => {
 function initialiseRoles() {
     Role.estimatedDocumentCount((err, count) => {
         if (!err && count === 0) {
-            new Role({
-                name: "user"
-            }).save(err => {
-                if (err) {
-                    console.log("error", err);
-                }
+            for(const role of Role) {
+                new Role({
+                    name: role
+                }).save(err => {
+                    if (err) {
+                        console.log("Error: ", err);
+                    }
 
-                console.log("Added 'user' to roles collection");
-            });
-
-            new Role({
-                name: "admin"
-            }).save(err => {
-                if (err) {
-                    console.log("error", err);
-                }
-
-                console.log("Added 'admin' to roles collection");
-            });
+                    console.log(`Added ${role} to roles collection`);
+                });
+            }
         }
     });

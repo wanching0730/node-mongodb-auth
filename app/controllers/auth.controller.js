@@ -2,6 +2,9 @@
 1. Register: Save new user's details, save new user's role
 2. Login: Check whether user exists in database, verify password, generate an access token and return to user
 */
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+
 const config = require("../config/auth.config");
 const db = require("../models");
 const User = db.user;
@@ -11,7 +14,7 @@ module.exports = {
     login: (req, res) => {
         // check whether user exists in database
         User.findOne({
-            name: req.body.name
+            id: req.body.id
         })
             .populate("roles", "-__v")
             .exec(function(err, user) {
@@ -38,7 +41,7 @@ module.exports = {
                 let authorities = [];
 
                 for (let i = 0; i < user.roles.length; i++) {
-                    authorities.push("ROLE_" + user.roles[i].name.toUpperCase());
+                    authorities.push(user.roles[i].name);
                 }
                 res.status(200).send({
                     id: user.user_id,

@@ -6,7 +6,7 @@ const bcrypt = require("bcryptjs");
 const db = require("../models");
 const User = db.user;
 const Role = db.role;
-const validate = require("../utils/validate");
+const {validateDOB} = require("../utils/validate");
 
 // Create and Save a new user
 module.exports = {
@@ -21,7 +21,7 @@ module.exports = {
         if(!req.body.name) return res.status(400).send({message: "Error: User name cannot be empty"});
 
         // check D.O.B format
-        if(!validate.validateDOB) return res.status(400).send({message: "Error: Date of Birth should be in mm/dd/yyyy format"});
+        if(!validateDOB) return res.status(400).send({message: "Error: Date of Birth should be in mm/dd/yyyy format"});
 
         const user = new User({
             id: req.body.id,
@@ -33,94 +33,75 @@ module.exports = {
         });
 
         // save user's details
-        user.save(function(err, user) {
-            if (err) {
-                res.status(500).send({message: err});
-                return;
-            }
+        user.save()
+            .then(user => {
+                // save user's roles by getting role_id from database
+                if (req.body.roles) {
+                    // if user is admin
+                    console.log("Updating new user's role as admin");
 
-            // save user's roles by getting role_id from database
-            if (req.body.roles) {
-                // if user is admin
-                console.log("Updating new user's role as admin");
-
-                Role.find({name: {$in: req.body.roles}},
-                    function(err, roles) {
-                        if (err) {
-                            res.status(500).send({message: err});
-                            return;
-                        }
-
-                        user.roles = roles.map(role => role._id);
-                        user.save(function(err) {
-                            if (err) {
-                                res.status(500).send({message: err});
-                                return;
-                            }
-
-                            res.send({message: "User was registered successfully"});
-                        });
-                    }
-                );
-            } else {
-                // if user is normal user
-                console.log("Updating new user's role as normal user");
-
-                Role.findOne({name: "user"}, function(err, role) {
-                    if (err) {
-                        res.status(500).send({message: err});
+                    Role.find({name: {$in: req.body.roles}})
+                        .then(roles => {
+                            user.roles = roles.map(role => role._id);
+                        }).catch(err => {
+                        res.status(500).send({message: "Errors occur when searching for new user's role in database: " + err});
                         return;
-                    }
+                    })
+                } else {
+                    // if user is normal user
+                    console.log("Updating new user's role as normal user");
 
-                    user.roles = [role._id];
-                    user.save(function(err) {
-                        if (err) {
-                            res.status(500).send({message: err});
+                    Role.findOne({name: "user"})
+                        .then(role => {
+                            user.roles = [role._id];
+                        })
+                        .catch(err => {
+                            res.status(500).send({message: "Errors occur when searching for new user's role in database: " + err});
                             return;
-                        }
+                        })
 
-                        res.send({message: "User was registered successfully"});
-                    });
-                });
-            }
-        });
+                }
+
+                user.save()
+                    .then(() => res.send({message: "User was registered successfully"}))
+                    .catch(err => {
+                        res.status(500).send({message: "Errors occur when updating new user's role: " + err});
+                        return;
+                    })
+            })
+            .catch(err => {
+                res.status(500).send({message: "Errors occur when registering new user: " + err});
+                return;
+            })
     },
     // Retrieve and return all users
     findAll: (req, res) => {
+        console.log("Retrieving all users")
         User.find()
             .then(users => {
                 res.send(users);
             }).catch(err => {
-            res.status(500).send({
-                message: err.message || "Some errors occurred when retrieving users"
-            });
+            res.status(500).send({message: "Errors occur when retrieving all users in database: " + err});
         });
     },
     // Find a single user with a user ID
     findOne: (req, res) => {
+        console.log("Retrieving one user")
         let id = req.params.id ? req.params.id : res.locals.id;
 
-        User.findById(id)
+        User.findOne({id: id})
+            .populate("roles", "-__v")
             .then(user => {
-                if(!user) {
-                    return res.status(404).send({
-                        message: "User not found with user ID " + id
-                    });
-                }
+                if(!user) return res.status(404).send({message: "User not found with user ID " + id});
+
                 res.send(user);
             }).catch(err => {
-            if(err.kind === 'ObjectId') {
-                return res.status(404).send({
-                    message: "User not found with user ID " + id
-                });
-            }
-            return res.status(500).send({
-                message: "Error retrieving user with ID " + id
-            });
+                return res.status(500).send({message: "Errors occur when retrieving user with ID " + id});
         });
     },
     // Update a user identified by the user ID in the request
     updateOne: (req, res) => {
+        console.log("Updating one user")
         let id = req.params.id ? req.params.id : res.locals.id;
 
         // check user ID
@@ -130,54 +111,41 @@ module.exports = {
         if(!req.body.name) return res.status(400).send({message: "Error: User name cannot be empty"});
 
         // check D.O.B format
-        if(!validate.validateDOB) return res.status(400).send({message: "Error: Date of Birth should be in mm/dd/yyyy format"});
+        if(!validateDOB) return res.status(400).send({message: "Error: Date of Birth should be in mm/dd/yyyy format"});
 
-        User.findByIdAndUpdate(id, {
-            id: id,
-            name: req.body.name,
-            dob: req.body.dob,
-            address: req.body.address,
-            description: req.body.description
-        }, {new: true})
-            .then(user => {
-                if(!user) {
-                    return res.status(404).send({
-                        message: "User not found with ID " + id
-                    });
+        User.findOne({id: id}, function(err, user) {
+            if(!user) return res.status(404).send({message: "User not found with ID " + id});
+
+            user.name = req.body.name,
+            user.dob = req.body.dob,
+            user.address = req.body.address,
+            user.description = req.body.description
+
+            user.save(function (err) {
+                if (err) {
+                    res.status(500).send({message: "Errors occur when updating user: " + err});
+                    return;
                 }
-                res.send(user);
-            }).catch(err => {
-            if(err.kind === 'ObjectId') {
-                return res.status(404).send({
-                    message: "User not found with ID " + id
-                });
-            }
-            return res.status(500).send({
-                message: "Error updating user with ID " + id
+
+                res.status(200).send({message: "User was updated successfully"});
             });
         });
     },
     // Delete a user with the specified user ID in the request
     deleteOne: (req, res) => {
+        console.log("Deleting one user")
         let id = req.params.id ? req.params.id : res.locals.id;
 
         User.findByIdAndRemove(id)
             .then(user => {
-                if(!user) {
-                    return res.status(404).send({
-                        message: "User not found with ID " + id
-                    });
-                }
-                res.send({message: "User deleted successfully!"});
+                if(!user) return res.status(404).send({message: "User not found with ID " + id});
+
+                res.status(200).send({message: "User was deleted successfully"});
             }).catch(err => {
-            if(err.kind === 'ObjectId' || err.name === 'NotFound') {
-                return res.status(404).send({
-                    message: "User not found with ID " + id
-                });
-            }
-            return res.status(500).send({
-                message: "Could not delete user with ID " + id
-            });
+            if(err.kind === 'ObjectId' || err.name === 'NotFound')
+                return res.status(404).send({message: "User not found with ID " + id});
+
+            return res.status(500).send({message: "Errors occur when deleting user with ID " + id + ": " + err});
         });
     }
 };

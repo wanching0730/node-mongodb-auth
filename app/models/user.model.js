@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
     description: String, // user description
     roles: [
         {
-            type: mongoose.Schema.Types.ObjectId,
+            type: String,
             ref: "Role"
         }
     ] // user role(s)

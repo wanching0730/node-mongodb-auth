@@ -1,5 +1,5 @@
 /*
-1. Check duplications for username
+1. Check duplications for user ID
 2. Check if roles in request exists in our database or not
 */
 
@@ -8,13 +8,13 @@ const ROLES = db.ROLES;
 const User = db.user;
 
 module.exports = {
-    // check duplications for username
+    // check duplications for user ID
     verifyNewUser: (req, res, next) => {
         console.log("Verifying new user");
 
         // check duplicate username
         User.findOne({
-            name: req.body.name
+            id: req.body.id
         }).exec(function (err, user) {
             if (err) {
                 res.status(500).send({message: err});
@@ -22,7 +22,7 @@ module.exports = {
             }
 
             if (user) {
-                res.status(400).send({message: "Error: Username is already in used"});
+                res.status(400).send({message: "Error: User ID is already in used"});
                 return;
             }
 

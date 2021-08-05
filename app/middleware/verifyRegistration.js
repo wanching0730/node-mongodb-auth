@@ -36,7 +36,6 @@ verifyRoles = (req, res, next) => {
             }
         }
     }
-
     next();
 };
 

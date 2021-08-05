@@ -19,9 +19,7 @@ exports.login = (req, res) => {
             return;
         }
 
-        if (!user) {
-            return res.status(401).send({ message: "Error: User not found." });
-        }
+        if (!user) return res.status(401).send({ message: "Error: User not found." });
 
         // verify password
         let passwordIsValid = bcrypt.compareSync(
@@ -29,8 +27,7 @@ exports.login = (req, res) => {
             user.password
         );
 
-        if (!passwordIsValid)
-            return res.status(401).send({accessToken: null, message: "Error: Invalid password"});
+        if (!passwordIsValid) return res.status(401).send({accessToken: null, message: "Error: Invalid password"});
 
         // generate new access token
         let token = jwt.sign({ id: user.id, role: user.role }, config.secret, {

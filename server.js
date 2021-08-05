@@ -32,7 +32,7 @@ db.mongoose
     })
     .then(() => {
         console.log("Successfully connected to MongoDB.");
-        initial();
+        initialiseRoles();
     })
     .catch(err => {
         console.error("Connection error", err);

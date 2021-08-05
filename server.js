@@ -2,7 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
-const {CustomError} = require("./app/utils/error");
+const CustomError = require("./app/utils/custom-error");
 
 const dbConfig = require ("./app/config/db.config");
 const db = require("./app/models");

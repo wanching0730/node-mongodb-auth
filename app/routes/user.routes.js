@@ -1,6 +1,7 @@
 const { verifyToken } = require("../middleware/authenticate");
 const { isAdmin } = require("../middleware/authorize");
 const {findAll, findOne, createOne, updateOne, deleteOne} = require("../controllers/user.controller");
+const {asyncHandler} = require("../utils/error-handler")
 
 module.exports = function(app) {
     app.use(function(req, res, next) {
@@ -20,7 +21,7 @@ module.exports = function(app) {
 
     // routes for admin: Can select single record, select all records, update, delete any record
     app.use("/admin/users", [verifyToken, isAdmin])
-    app.get("/admin/users/:id", findOne);
+    app.get("/admin/users/:id", asyncHandler(findOne));
     app.get("/admin/users", findAll);
     app.post("/admin/users", createOne);
     app.put("/admin/users/:id", updateOne);

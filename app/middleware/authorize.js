@@ -4,7 +4,8 @@
 */
 module.exports = {
     isAdmin: (req, res, next) => {
-        if(res.locals.roles.find(r => r.name === "admin")) {
+        console.log(res.locals.roles)
+        if(res.locals.roles.includes("admin")) {
             next();
             return;
         }

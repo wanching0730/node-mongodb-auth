@@ -7,7 +7,7 @@ const db = require("../models");
 const User = db.user;
 const Role = db.role;
 const {validateDOB} = require("../utils/validate");
-const CustomError = require("../utils/error");
+const CustomError = require("../utils/custom-error");
 
 // Create and Save a new user
 module.exports = {
@@ -93,12 +93,14 @@ module.exports = {
         User.findOne({id: id})
             .populate("roles", "-__v")
             .then(user => {
-                if(!user) throw new CustomError(404, "User not found with user ID " + id);
+                if(!user) throw new CustomError(404, "User not found with user ID " + id)
+                    //res.status(404).send({message: "User not found with user ID " + id);
 
                 res.send(user);
             }).catch(err => {
-                return res.status(500).send({message: "Errors occur when retrieving user with ID " + id + ": " + err});
-        });
+                throw new CustomError(500, "Errors occur when retrieving user with ID " + id + ": " + err)
+                //return res.status(500).send({message: "Errors occur when retrieving user with ID " + id + ": " + err});
+            });
     },
     // Update a user identified by the user ID in the request
     updateOne: (req, res) => {

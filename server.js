@@ -2,7 +2,8 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
-// database configuration
+const {CustomError} = require("./app/utils/error");
+
 const dbConfig = require ("./app/config/db.config");
 const db = require("./app/models");
 const Role = db.role;
@@ -40,6 +41,14 @@ db.mongoose
 // routes
 require('./app/routes/auth.routes')(app);
 require('./app/routes/user.routes')(app);
+
+// error handling
+app.use((err, req, res, next) => {
+    if (err instanceof CustomError) res.status(err.statusCode).json(err.message);
+    else res.status(500).json(err);
+
+    return next();
+})
 
 // set port, listen for requests
 const PORT = process.env.PORT;

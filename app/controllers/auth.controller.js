@@ -47,6 +47,8 @@ module.exports = {
             for (let i = 0; i < user.roles.length; i++) {
                 authorities.push(user.roles[i].name);
             }
+
+            logger.audit(`User ${req.body.id} logged in successfully`)
             res.status(200).send({
                 id: user.user_id,
                 name: user.name,

@@ -9,12 +9,65 @@ const jwt = require("jsonwebtoken");
 const config = require("../config/auth.config");
 const db = require("../models");
 const User = db.user;
+const Role = db.role;
 
 const controller = require("../controllers/user.controller");
+const {validateDOB} = require("../utils/validate");
 const CustomError = require("../utils/custom-error");
 const logger = require("../utils/logger")(__filename)
 
 module.exports = {
+    register: (req, res) => {
+        let author = req.url.includes("admin") ? "Admin" : "User";
+        logger.audit(`${author}: Registering new user`);
+
+        // Validate request before passing to database
+        // check user ID
+        if(!req.body.id) throw new CustomError(400, "Error: User ID cannot be empty");
+
+        // check user name
+        if(!req.body.name) throw new CustomError(400, "Error: User name cannot be empty");
+
+        // check D.O.B format
+        if(!validateDOB) throw new CustomError(400, "Error: Date of Birth should be in mm/dd/yyyy format");
+
+        const user = new User({
+            id: req.body.id,
+            name: req.body.name,
+            password: bcrypt.hashSync(req.body.password, 8),
+            dob: req.body.dob,
+            address: req.body.address,
+            description: req.body.description
+        });
+
+        // save user's roles by getting role_id from database
+        if (req.body.roles) {
+            // if user is admin
+            logger.info("Database: Retrieving new user's role");
+
+            Role.find({name: {$in: req.body.roles}})
+                .then(roles => {
+                    user.roles = roles.map(role => role._id);
+
+                    // save user's details
+                    user.save()
+                        .then(() => res.status(200).send({message: "User was registered successfully"}))
+                })
+        } else {
+            // if user is normal user
+            logger.info("Database: Retrieving new user's role as normal user");
+
+            Role.findOne({name: "user"})
+                .then(role => {
+                    user.roles = [role._id];
+
+                    // save user's details
+                    user.save()
+                        .then(() => res.status(200).send({message: "User was registered successfully"}))
+                });
+        }
+    },
+
     login: (req, res) => {
         logger.audit(`User ${req.body.id} logging in`)
         // check whether user exists in database
@@ -37,7 +90,7 @@ module.exports = {
                 logger.error("Error: Invalid password")
             }
 
-            // generate new access token
+            // generate new access token with user's ID and user's roles
             let token = jwt.sign({ id: user.id, roles: user.roles.map(r => r.name) }, config.secret, {
                 expiresIn: 3600 // 1 hour
             });

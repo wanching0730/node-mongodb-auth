@@ -1,6 +1,6 @@
 const { verifyToken } = require("../middleware/authenticate");
 const { isAdmin } = require("../middleware/authorize");
-const {findAll, findOne, createOne, updateOne, deleteOne} = require("../controllers/user.controller");
+const {findAll, findOne, updateOne, deleteOne} = require("../controllers/user.controller");
 const {asyncHandler} = require("../utils/error-handler")
 
 module.exports = function(app) {
@@ -12,10 +12,9 @@ module.exports = function(app) {
         next();
     });
 
-    // routes for normal user: Only can select, update, delete own record
+    // routes for normal user: Only can select, update, delete own record only
     app.use("/users", [verifyToken])
     app.get("/users", asyncHandler(findOne));
-    app.post("/users", asyncHandler(createOne));
     app.put("/users", asyncHandler(updateOne));
     app.delete("/users", asyncHandler(deleteOne));
 
@@ -23,7 +22,6 @@ module.exports = function(app) {
     app.use("/admin/users", [verifyToken, isAdmin])
     app.get("/admin/users/:id", asyncHandler(findOne));
     app.get("/admin/users", asyncHandler(findAll));
-    app.post("/admin/users", asyncHandler(createOne));
     app.put("/admin/users/:id", asyncHandler(updateOne));
     app.delete("/admin/users/:id", asyncHandler(deleteOne));
 };

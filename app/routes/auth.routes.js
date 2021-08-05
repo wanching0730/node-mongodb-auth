@@ -1,6 +1,5 @@
 const { verifyNewUser, verifyRoles } = require("../middleware/verifyRegistration");
-const {login} = require("../controllers/auth.controller");
-const {createOne} = require("../controllers/user.controller");
+const {login, register} = require("../controllers/auth.controller");
 
 module.exports = function(app) {
     app.use(function(req, res, next) {
@@ -11,13 +10,6 @@ module.exports = function(app) {
         next();
     });
 
-    app.post("/auth/register",
-        [
-            verifyNewUser,
-            verifyRoles
-        ],
-        createOne
-    );
-
+    app.post("/auth/register", [verifyNewUser, verifyRoles], register);
     app.post("/auth/login", login);
 };

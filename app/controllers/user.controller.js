@@ -32,46 +32,47 @@ module.exports = {
             description: req.body.description
         });
 
-        // save user's details
-        user.save()
-            .then(user => {
-                // save user's roles by getting role_id from database
-                if (req.body.roles) {
-                    // if user is admin
-                    console.log("Updating new user's role as admin");
+        // save user's roles by getting role_id from database
+        if (req.body.roles) {
+            // if user is admin
+            console.log("Retrieving new user's role");
 
-                    Role.find({name: {$in: req.body.roles}})
-                        .then(roles => {
-                            user.roles = roles.map(role => role._id);
-                        }).catch(err => {
-                        res.status(500).send({message: "Errors occur when searching for new user's role in database: " + err});
-                        return;
-                    })
-                } else {
-                    // if user is normal user
-                    console.log("Updating new user's role as normal user");
+            Role.find({name: {$in: req.body.roles}})
+                .then(roles => {
+                    user.roles = roles.map(role => role._id);
 
-                    Role.findOne({name: "user"})
-                        .then(role => {
-                            user.roles = [role._id];
-                        })
+                    // save user's details
+                    user.save()
+                        .then(() => res.status(200).send({message: "User was registered successfully"}))
                         .catch(err => {
-                            res.status(500).send({message: "Errors occur when searching for new user's role in database: " + err});
+                            res.status(500).send({message: "Errors occur when registering user: " + err});
                             return;
                         })
-                }
+                }).catch(err => {
+                    res.status(500).send({message: "Errors occur when Retrieving for new user's role from database: " + err});
+                    return;
+                })
+        } else {
+            // if user is normal user
+            console.log("Retrieving new user's role as normal user");
 
-                user.save()
-                    .then(() => res.send({message: "User was registered successfully"}))
-                    .catch(err => {
-                        res.status(500).send({message: "Errors occur when updating new user's role: " + err});
-                        return;
-                    })
-            })
-            .catch(err => {
-                res.status(500).send({message: "Errors occur when registering new user: " + err});
-                return;
-            })
+            Role.findOne({name: "user"})
+                .then(role => {
+                    user.roles = [role._id];
+
+                    // save user's details
+                    user.save()
+                        .then(() => res.status(200).send({message: "User was registered successfully"}))
+                        .catch(err => {
+                            res.status(500).send({message: "Errors occur when registering user: " + err});
+                            return;
+                        })
+                })
+                .catch(err => {
+                    res.status(500).send({message: "Errors occur when Retrieving for new user's role from database: " + err});
+                    return;
+                })
+        }
     },
     // Retrieve and return all users
     findAll: (req, res) => {
@@ -80,8 +81,8 @@ module.exports = {
             .then(users => {
                 res.send(users);
             }).catch(err => {
-            res.status(500).send({message: "Errors occur when retrieving all users in database: " + err});
-        });
+                res.status(500).send({message: "Errors occur when retrieving all users in database: " + err});
+            });
     },
     // Find a single user with a user ID
     findOne: (req, res) => {

@@ -1,9 +1,9 @@
-const authentication = require("./authentication");
-const authorization = require("./authorization");
+const authentication = require("./authenticate");
+const authorization = require("./authorize");
 const verifyRegistration = require("./verifyRegistration");
 
 module.exports = {
-    authenticatorSelection,
+    authentication,
     authorization,
     verifyRegistration
 };

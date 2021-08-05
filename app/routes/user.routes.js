@@ -1,5 +1,5 @@
-const { authenticate } = require("../middlewares");
-const controller = require("../controllers/user.controller");
+const { verifyToken } = require("../middleware/authenticate");
+const {findOne, createOne, updateOne, deleteOne} = require("../controllers/user.controller");
 
 module.exports = function(app) {
     app.use(function(req, res, next) {
@@ -11,9 +11,9 @@ module.exports = function(app) {
     });
 
     // routes for normal user: Only can select, create, update, delete own record
-    app.use("/users", [authenticate.verifyToken])
-    app.get("/users", controller.findOne);
-    app.post("/users", controller.createOne);
-    app.put("/users", controller.updateOne);
-    app.delete("/users", controller.deleteOne);
+    app.use("/users", [verifyToken])
+    app.get("/users", findOne);
+    app.post("/users", createOne);
+    app.put("/users", updateOne);
+    app.delete("/users", deleteOne);
 };

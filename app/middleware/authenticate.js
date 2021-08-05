@@ -5,21 +5,26 @@
 const jwt = require("jsonwebtoken");
 const config = require("../config/auth.config.js");
 
-verifyToken = (req, res, next) => {
-    let token = req.headers["x-access-token"];
+const { TokenExpiredError } = jwt;
 
-    if (!token) return res.status(403).send({ message: "Error: Token not found" });
+// Detect expired token
+// const catchError = (err, res) => {
+//     if (err instanceof TokenExpiredError) return res.status(401).send({ message: "Error: Access token was expired" });
+//     return res.sendStatus(401).send({ message: "Error: Unauthorized" });
+// }
 
-    jwt.verify(token, config.secret, (err, decoded) => {
-        if (err) return res.status(401).send({ message: "Error: User is not authenticated" });
-        req.locals.id = decoded.id;
-        req.locals.role = decoded.role
-        next();
-    });
-};
+module.exports = {
+    verifyToken: (req, res, next) => {
+        let token = req.headers["x-access-token"];
 
-const authenticate = {
-    verifyToken
-};
-module.exports = authenticate;
+        if (!token) return res.status(403).send({ message: "Error: Token not found" });
+
+        jwt.verify(token, config.secret, (err, decoded) => {
+            if (err) return res.status(401).send({ message: "Error: User is not authenticated" });
+            res.locals.id = decoded.id;
+            res.locals.role = decoded.role
+            next();
+        });
+    }
+}
 

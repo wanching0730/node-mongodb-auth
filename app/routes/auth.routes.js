@@ -1,6 +1,6 @@
-const { verifyRegistration } = require("../middleware");
-const authController = require("../controllers/auth.controller");
-const userController = require("../controllers/user.controller");
+const { verifyNewUser, verifyRoles } = require("../middleware/verifyRegistration");
+const {login} = require("../controllers/auth.controller");
+const {createOne} = require("../controllers/user.controller");
 
 module.exports = function(app) {
     app.use(function(req, res, next) {
@@ -11,14 +11,13 @@ module.exports = function(app) {
         next();
     });
 
-    app.post(
-        "/api/auth/register",
+    app.post("/auth/register",
         [
-            verifyRegistration.verifyNewUser,
-            verifyRegistration.verifyRoles
+            verifyNewUser,
+            verifyRoles
         ],
-        userController.create
+        createOne
     );
 
-    app.post("/api/auth/login", authController.login);
+    app.post("/auth/login", login);
 };

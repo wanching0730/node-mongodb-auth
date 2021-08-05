@@ -59,7 +59,6 @@ module.exports = {
                             res.status(500).send({message: "Errors occur when searching for new user's role in database: " + err});
                             return;
                         })
-
                 }
 
                 user.save()
@@ -113,39 +112,38 @@ module.exports = {
         // check D.O.B format
         if(!validateDOB) return res.status(400).send({message: "Error: Date of Birth should be in mm/dd/yyyy format"});
 
-        User.findOne({id: id}, function(err, user) {
-            if(!user) return res.status(404).send({message: "User not found with ID " + id});
+        User.findOne({id: id})
+            .then(user => {
+                if(!user) return res.status(404).send({message: "User not found with ID " + id});
 
-            user.name = req.body.name,
-            user.dob = req.body.dob,
-            user.address = req.body.address,
-            user.description = req.body.description
+                user.name = req.body.name,
+                user.dob = req.body.dob,
+                user.address = req.body.address,
+                user.description = req.body.description
 
-            user.save(function (err) {
-                if (err) {
-                    res.status(500).send({message: "Errors occur when updating user: " + err});
-                    return;
-                }
-
-                res.status(200).send({message: "User was updated successfully"});
-            });
-        });
+                user.save
+                    .then(() => {
+                        res.status(200).send({message: "User was updated successfully"});
+                    })
+                    .catch(err => {
+                        res.status(500).send({message: "Errors occur when updating user: " + err});
+                        return;
+                    })
+            })
     },
     // Delete a user with the specified user ID in the request
     deleteOne: (req, res) => {
         console.log("Deleting one user")
         let id = req.params.id ? req.params.id : res.locals.id;
 
-        User.findByIdAndRemove(id)
-            .then(user => {
-                if(!user) return res.status(404).send({message: "User not found with ID " + id});
-
+        User.deleteOne({id: id})
+            .then(() => {
                 res.status(200).send({message: "User was deleted successfully"});
             }).catch(err => {
-            if(err.kind === 'ObjectId' || err.name === 'NotFound')
-                return res.status(404).send({message: "User not found with ID " + id});
+                if(err.name === 'NotFound')
+                    return res.status(404).send({message: "User not found with ID " + id});
 
-            return res.status(500).send({message: "Errors occur when deleting user with ID " + id + ": " + err});
+                return res.status(500).send({message: "Errors occur when deleting user with ID " + id + ": " + err});
         });
     }
 };

@@ -4,12 +4,13 @@ const mongoose = require("mongoose");
 const User = mongoose.model(
     "User",
     new mongoose.Schema({
-        id: String, // user ID
-        username: String, // user name
-        dob: String, // date of birth
+        id: String // user-defined ID: required field
+        name: String, // user name: required field
+        password: String,
+        dob: String, // date of birth: mm/dd/yyyy format
         address: String, // user address
         description: String, // user description
-        createdAt: String, // user created date
+        createdAt: Str  ing, // user created date
         roles: [
             {
                 type: mongoose.Schema.Types.ObjectId,

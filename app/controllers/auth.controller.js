@@ -7,71 +7,12 @@ const db = require("../models");
 const User = db.user;
 const Role = db.role;
 
-exports.register = (req, res) => {
-    // create user model
-    const user = new User({
-        username: req.body.username,
-        email: req.body.email,
-        password: bcrypt.hashSync(req.body.password, 8)
-    });
-
-    // save user's details
-    user.save((err, user) => {
-        if (err) {
-            res.status(500).send({ message: err });
-            return;
-        }
-
-        // save user's roles by getting role_id from database
-        if (req.body.roles) {
-            // if user is admin
-            Role.find(
-                {
-                    name: { $in: req.body.roles }
-                },
-                (err, roles) => {
-                    if (err) {
-                        res.status(500).send({ message: err });
-                        return;
-                    }
-
-                    user.roles = roles.map(role => role._id);
-                    user.save(err => {
-                        if (err) {
-                            res.status(500).send({ message: err });
-                            return;
-                        }
-
-                        res.send({ message: "User was registered successfully!" });
-                    });
-                }
-            );
-        } else {
-            // if user is normal user
-            Role.findOne({ name: "user" }, (err, role) => {
-                if (err) {
-                    res.status(500).send({ message: err });
-                    return;
-                }
-
-                user.roles = [role._id];
-                user.save(err => {
-                    if (err) {
-                        res.status(500).send({ message: err });
-                        return;
-                    }
-
-                    res.send({ message: "User was registered successfully!" });
-                });
-            });
-        }
-    });
-};
+const controller = require("../controllers/user.controller");
 
 exports.login = (req, res) => {
     // check whether user exists in database
     User.findOne({
-        username: req.body.username
+        name: req.body.name
     })
     .populate("roles", "-__v")
     .exec((err, user) => {
@@ -81,7 +22,7 @@ exports.login = (req, res) => {
         }
 
         if (!user) {
-            return res.status(404).send({ message: "Error: User not found." });
+            return res.status(401).send({ message: "Error: User not found." });
         }
 
         // verify password
@@ -104,8 +45,8 @@ exports.login = (req, res) => {
             authorities.push("ROLE_" + user.roles[i].name.toUpperCase());
         }
         res.status(200).send({
-            id: user._id,
-            username: user.username,
+            id: user.user_id
+            name: user.name,
             roles: authorities,
             accessToken: token
         });

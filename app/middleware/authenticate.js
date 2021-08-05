@@ -16,13 +16,13 @@ verifyToken = (req, res, next) => {
         if (err) {
             return res.status(401).send({ message: "Error: User is not authenticated" });
         }
-        req.userId = decoded.id;
+        req.locals.id = decoded.id;
         next();
     });
 };
 
-const authentication = {
+const authenticate = {
     verifyToken
 };
-module.exports = authentication;
+module.exports = authenticate;
 

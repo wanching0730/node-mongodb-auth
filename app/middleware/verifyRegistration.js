@@ -10,7 +10,7 @@ const User = db.user;
 verifyNewUser = (req, res, next) => {
     // check duplicate username
     User.findOne({
-        username: req.body.username
+        name: req.body.name
     }).exec((err, user) => {
         if (err) {
             res.status(500).send({ message: err });

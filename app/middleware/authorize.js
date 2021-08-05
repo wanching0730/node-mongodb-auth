@@ -36,7 +36,7 @@ isAdmin = (req, res, next) => {
     });
 };
 
-const authorization = {
+const authorize = {
     isAdmin
 };
-module.exports = authorization;
+module.exports = authorize;

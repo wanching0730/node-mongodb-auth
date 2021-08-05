@@ -16,7 +16,7 @@ const logger = require("../utils/logger")(__filename)
 module.exports = {
     createOne: (req, res) => {
         let author = req.url.includes("admin") ? "Admin" : "User";
-        logger.info(`${author}: Creating new user`);
+        logger.audit(`${author}: Registering new user`);
 
         // Validate request before passing to database
         // check user ID
@@ -74,10 +74,9 @@ module.exports = {
     },
     // Find a single user with a user ID
     findOne: (req, res) => {
-        let author = req.url.includes("admin") ? "Admin" : "User";
-        logger.info(`${author}: Retrieving one user`);
-
         let id = req.params.id ? req.params.id : res.locals.id;
+        let author = req.url.includes("admin") ? "Admin" : res.locals.id;
+        logger.info(`${author}: Retrieving one user`);
 
         return User.findOne({id: id})
             .populate("roles", "-__v")
@@ -89,10 +88,9 @@ module.exports = {
     },
     // Update a user identified by the user ID in the request
     updateOne: (req, res) => {
-        let author = req.url.includes("admin") ? "Admin" : "User";
-        logger.info(`${author}: Updating one user`);
-
         let id = req.params.id ? req.params.id : res.locals.id;
+        let author = req.url.includes("admin") ? "Admin" : res.locals.id;
+        logger.info(`${author}: Updating one user`);
 
         // check user ID
         if(!id) throw new CustomError(400, "Error: User ID cannot be empty");
@@ -120,10 +118,10 @@ module.exports = {
     },
     // Delete a user with the specified user ID in the request
     deleteOne: (req, res) => {
-        let author = req.url.includes("admin") ? "Admin" : "User";
+        let id = req.params.id ? req.params.id : res.locals.id;
+        let author = req.url.includes("admin") ? "Admin" : res.locals.id;
         logger.info(`${author}: Deleting one user`);
 
-        let id = req.params.id ? req.params.id : res.locals.id;
         User.deleteOne({id: id})
             .then(() => {
                 res.status(200).send({message: "User was deleted successfully"});

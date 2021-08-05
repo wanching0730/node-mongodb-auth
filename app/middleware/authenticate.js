@@ -1,5 +1,5 @@
 /*
-1. Authentication: Verify the token in HTTP header
+Authentication: Verify the token in HTTP header
 */
 
 const jwt = require("jsonwebtoken");

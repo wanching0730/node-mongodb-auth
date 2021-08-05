@@ -1,3 +1,12 @@
+/*
+1. Customised logger to categorise logs into 3 types: audit, general and error
+2. New log file will be created on everyday with the specific date as file name in /log folder
+3. Types:
+    Audit: Logs for login, registration and logout
+    General: Logs for the actions and audit information
+    Error: Logs for all general and customised error messages
+*/
+
 const path = require("path");
 const { createLogger, format, transports } = require("winston");
 const { combine, timestamp, label, printf } = format

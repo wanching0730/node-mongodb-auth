@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 
 const CustomError = require("./app/utils/custom-error");
+const logger = require("./app/utils/logger")(__filename)
 
 const dbConfig = require ("./app/config/db.config");
 const db = require("./app/models");
@@ -12,7 +13,7 @@ const ROLES = db.ROLES;
 const app = express();
 
 let corsOptions = {
-    origin: "http://localhost:" + process.env.PORT
+    origin: `http://localhost:${process.env.PORT}`
 };
 
 app.use(cors(corsOptions));
@@ -30,11 +31,11 @@ db.mongoose
         useUnifiedTopology: true
     })
     .then(() => {
-        console.log("Successfully connected to MongoDB.");
+        logger.info("Successfully connected to MongoDB");
         initialiseRoles();
     })
     .catch(err => {
-        console.error("Connection error", err);
+        logger.error("MongoDB connection error", err);
         process.exit();
     });
 
@@ -44,16 +45,22 @@ require('./app/routes/user.routes')(app);
 
 // error handling
 app.use((err, req, res, next) => {
-    if (err instanceof CustomError) res.status(err.statusCode).json(err.message);
-    else res.status(500).json(err);
-
+    if (err instanceof CustomError) {
+        // handle custom error message
+        res.status(err.statusCode).json(err.message);
+        logger.error(err.message)
+    } else {
+        // handle general error message thrown from database
+        res.status(500).json(`Errors occur in database: ${err.message}`);
+        logger.error(err) // log the full error message
+    }
     return next();
 })
 
 // set port, listen for requests
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}.`);
+    logger.info(`Server is running on port ${PORT}.`);
 });
 
 // initialise types of roles in MongoDB collection
@@ -63,13 +70,8 @@ function initialiseRoles() {
             for (const role of ROLES) {
                 new Role({
                     name: role
-                }).save(err => {
-                    if (err) {
-                        console.log("Error: ", err);
-                    }
-
-                    console.log(`Added ${role} to Role collection`);
-                });
+                }).save();
+                logger.info(`Added ${role} to Role collection`);
             }
         }
     });

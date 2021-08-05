@@ -22,7 +22,7 @@ module.exports = {
         jwt.verify(token, config.secret, (err, decoded) => {
             if (err) return res.status(401).send({ message: "Error: User is not authenticated" });
             res.locals.id = decoded.id;
-            res.locals.role = decoded.role
+            res.locals.roles = decoded.roles
             next();
         });
     }

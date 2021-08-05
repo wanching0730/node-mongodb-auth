@@ -122,7 +122,7 @@ module.exports = {
                 user.address = req.body.address,
                 user.description = req.body.description
 
-                user.save
+                user.save()
                     .then(() => {
                         res.status(200).send({message: "User was updated successfully"});
                     })

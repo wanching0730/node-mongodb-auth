@@ -34,8 +34,8 @@ module.exports = {
                 if (!passwordIsValid) return res.status(401).send({accessToken: null, message: "Error: Invalid password"});
 
                 // generate new access token
-                let token = jwt.sign({ id: user.id, role: user.role }, config.secret, {
-                    expiresIn: 86400 // 24 hours
+                let token = jwt.sign({ id: user.id, roles: user.roles.map(r => r.name) }, config.secret, {
+                    expiresIn: 3600 // 1 hour
                 });
 
                 let authorities = [];

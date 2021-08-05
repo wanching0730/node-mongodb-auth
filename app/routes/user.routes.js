@@ -21,7 +21,7 @@ module.exports = function(app) {
     // routes for admin: Can select single record, select all records, update, delete any record
     app.use("/users", [verifyToken, isAdmin])
     app.get("/users/:id", findOne);
-    app.get("/users", findAll);
+    app.get("/allUsers", findAll);
     app.post("/users", createOne);
     app.put("/users/:id", updateOne);
     app.delete("/users/:id", deleteOne);

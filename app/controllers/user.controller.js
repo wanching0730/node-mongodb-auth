@@ -5,7 +5,7 @@ const User = require('../models/user.model.js');
 const validate = require("../utils/validate");
 
 // Create and Save a new user
-exports.create = (req, res) => {
+exports.createOne = (req, res) => {
     // Validate request before passing to database
 
     // check user ID
@@ -94,7 +94,7 @@ exports.findAll = (req, res) => {
 
 // Find a single user with a user ID
 exports.findOne = (req, res) => {
-    let id = req.locals.id ? req.locals.id : req.params.id;
+    let id = req.params.id ? req.params.id : req.locals.id;
 
     User.findById(id)
         .then(user => {
@@ -117,8 +117,8 @@ exports.findOne = (req, res) => {
 };
 
 // Update a user identified by the user ID in the request
-exports.update = (req, res) => {
-    let id = req.locals.id ? req.locals.id : req.params.id;
+exports.updateOne = (req, res) => {
+    let id = req.params.id ? req.params.id : req.locals.id;
 
     // check user ID
     if(!id) return res.status(400).send({message: "Error: User ID cannot be empty"});
@@ -156,8 +156,8 @@ exports.update = (req, res) => {
 };
 
 // Delete a user with the specified user ID in the request
-exports.delete = (req, res) => {
-    let id = req.locals.id ? req.locals.id : req.params.id;
+exports.deleteOne = (req, res) => {
+    let id = req.params.id ? req.params.id : req.locals.id;
 
     User.findByIdAndRemove(id)
         .then(user => {

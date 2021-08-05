@@ -5,8 +5,6 @@
 const config = require("../config/auth.config");
 const db = require("../models");
 const User = db.user;
-const Role = db.role;
-
 const controller = require("../controllers/user.controller");
 
 exports.login = (req, res) => {
@@ -35,7 +33,7 @@ exports.login = (req, res) => {
             return res.status(401).send({accessToken: null, message: "Error: Invalid password"});
 
         // generate new access token
-        let token = jwt.sign({ id: user.id }, config.secret, {
+        let token = jwt.sign({ id: user.id, role: user.role }, config.secret, {
             expiresIn: 86400 // 24 hours
         });
 

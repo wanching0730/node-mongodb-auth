@@ -17,6 +17,7 @@ verifyToken = (req, res, next) => {
             return res.status(401).send({ message: "Error: User is not authenticated" });
         }
         req.locals.id = decoded.id;
+        req.locals.role = decoded.role
         next();
     });
 };

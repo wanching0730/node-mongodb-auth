@@ -63,6 +63,22 @@ module.exports = {
                     },
                 },
             },
+            // SuccessResponse model for token generation
+            TokenSuccessResponse: {
+                type: "object",
+                properties: {
+                    accessToken: {
+                        type: "string",
+                        description: "User's new access token",
+                        example: "hsjdhsjhskf"
+                    },
+                    refreshToken: {
+                        type: "string",
+                        description: "User's new refresh token",
+                        example: "wiqiwhfkfn"
+                    },
+                },
+            },
             // SuccessResponse model
             SuccessResponse: {
                 type: "object", //data type
@@ -71,6 +87,22 @@ module.exports = {
                         type: "string", // data type
                         description: "Success message", // desc
                         example: "User was {action} successfully", // example of an error internal code
+                    },
+                },
+            },
+            // UnauthenticatedError model
+            UnauthenticatedError: {
+                type: "object", //data type
+                properties: {
+                    statusCode: {
+                        type: "integer", // data type
+                        description: "Error status code", // desc
+                        example: 401, // example of an error message
+                    },
+                    message: {
+                        type: "string", // data type
+                        description: "Error message", // desc
+                        example: "Error: Invalid refresh token", // example of an error internal code
                     },
                 },
             },
@@ -162,6 +194,17 @@ module.exports = {
                         description: "User's encrypted password for authentication",
                         example: "12345",
                     },
+                }
+            },
+            // Model for refresh login input
+            RefreshLoginInput: {
+                type: "object",
+                properties: {
+                    refreshToken: {
+                        type: "string",
+                        description: "User's refresh token",
+                        example: "sjchsjdoiaof",
+                    }
                 }
             },
             // id model

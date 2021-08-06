@@ -50,9 +50,7 @@ module.exports = {
             await updateOne(id, {refreshToken: newRefreshToken});
             logger.audit(`New refresh token is updated to database successfully`);
 
-            return({statusCode: 200, body: {
-                accessToken: newToken, refreshToken: newRefreshToken
-            }});
+            res.status(200).send({accessToken: newToken, refreshToken: newRefreshToken});
         });
     }
 }

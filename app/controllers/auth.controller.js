@@ -10,6 +10,7 @@ const {validateDOB} = require("../utils/validate");
 const CustomError = require("../utils/custom-error");
 const logger = require("../utils/logger")(__filename);
 const {register, login} = require("../services/auth.service");
+const {updateOne} = require("../services/user.service");
 
 module.exports = {
     register: async (req, res) => {
@@ -45,7 +46,7 @@ module.exports = {
     login: async (req, res) => {
         const {id, password} = req.body;
 
-        logger.audit(`User ${id} logging in`)
+        logger.audit(`User ${id} is logging in`)
 
         // check user ID
         if (!id) throw new CustomError(400, "Error: User ID cannot be empty for authentication");
@@ -55,6 +56,17 @@ module.exports = {
 
         const {statusCode, body} = await login(id, password);
         res.status(statusCode).send({body});
+    },
+
+    logout: async (req, res) => {
+        const {id} = req.body;
+
+        logger.audit(`User ${id} is logging out`);
+
+        await updateOne(id, {refreshToken: ""});
+        logger.audit("User's refresh token is being removed from database successfully");
+
+        res.status(200).send({message: `User ${id} logged out successfully`});
     }
 };
 

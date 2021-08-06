@@ -1,76 +1,88 @@
 /*
-Unit Testing using Mocha and Chai which is test with local database.
-For ideal case, there should be a Test database and a Test environment for testing purpose to prevent data crashing.
+Unit Testing for User repository.
+Using Mocha and Chai with local Test database.
+NODE_ENV is passed when running command 'npm run test'.
 */
 
 const chai = require("chai");
 const expect = chai.expect;
 
 const db = require("../app/models");
+const User = db.user;
 
-const {initDatabase} = require("../app/utils/init-database");
 const {findOne, findAll, updateOne, deleteOne, deleteAll} = require("../app/services/user.service");
 
-before(function() {
-    initDatabase();
-});
-
 describe("User Controller", function() {
-    describe("Select, update, delete actions", function() {
-        // with not found error
+    describe("Error response for Select, update, delete actions", function() {
         it("Should not be able to retrieve user details with wrong ID",  async function() {
             try {
-                const user = await findOne("wrong normal user id");
+                await findOne("wrong test user id");
             } catch(err) {
-                expect(response.statusCode).to.equal(404);
-                expect(response.message).to.equal("User not found with user ID wrong test id");
+                expect(err.statusCode).to.equal(404);
+                expect(err.message).to.equal("User not found with user ID: wrong test user id");
             }
         });
 
         it("Should not be able to update user details with wrong ID",  async function() {
             try {
-                const user = await updateOne("wrong normal user id");
+                const user = new User({
+                    name: "test user name",
+                    dob: "07/30/1997",
+                    address: "test user address",
+                    description: "test user description"
+                });
+
+                await updateOne("wrong test user id", user);
             } catch(err) {
-                expect(response.statusCode).to.equal(404);
-                expect(response.message).to.equal("User not found with user ID wrong test id");
+                expect(err.statusCode).to.equal(404);
+                expect(err.message).to.equal("User not found with user ID: wrong test user id");
             }
         });
 
         it("Should not be able to delete user details with wrong ID",  async function() {
             try {
-                const user = await deleteOne("wrong normal user id");
+                await deleteOne("wrong test user id");
             } catch(err) {
-                expect(response.statusCode).to.equal(404);
-                expect(response.message).to.equal("User not found with user ID wrong test id");
+                expect(err.statusCode).to.equal(404);
+                expect(err.message).to.equal("User not found with user ID: wrong test user id");
             }
         });
+    });
 
-        // with success response
+    describe("Success response for Select, update, delete actions", function() {
+
         it("Should be able to retrieve details of all users",  async function() {
             const users = await findAll();
 
-            expect(users.length).to.equal(2);
+            expect(users.length).to.equal(1);
         });
 
-        it("Should be able to retrieve user details with specified ID",  async function() {
-            const user = await findOne("normal user id");
+        it("Should be able to retrieve user details with correct ID",  async function() {
+            const user = await findOne("test user id");
 
-            expect(user.id).to.equal("normal user id");
-            expect(user.name).to.equal("normal user name");
-            expect(user.address).to.equal("normal user address");
-            expect(user.description).to.equal("normal user description");
+            expect(user.id).to.equal("test user id");
+            expect(user.name).to.equal("test user name");
+            expect(user.address).to.equal("test user address");
+            expect(user.description).to.equal("test user description");
             expect(user.dob).to.equal("07/30/1997");
         });
 
-        it("Should be able to update user details with specified ID",  async function() {
-            const response = await updateOne("normal user id");
+        it("Should be able to update user details with correct ID",  async function() {
+            const user = new User({
+                name: "test user name",
+                dob: "07/30/1997",
+                address: "test user address",
+                description: "test user description"
+            });
+
+            const response = await updateOne("test user id", user);
 
             expect(response.statusCode).to.equal(200);
             expect(response.message).to.equal("User was updated successfully");
         });
 
-        it("Should be able to delete user details with specified ID",  async function() {
-            const response = await deleteOne("normal user id");
+        it("Should be able to delete user details with correct ID",  async function() {
+            const response = await deleteOne("test user id");
 
             expect(response.statusCode).to.equal(200);
             expect(response.message).to.equal("User was deleted successfully");
@@ -82,5 +94,5 @@ describe("User Controller", function() {
             expect(response.statusCode).to.equal(200);
             expect(response.message).to.equal("All users were deleted successfully");
         });
-    });
+    })
 });

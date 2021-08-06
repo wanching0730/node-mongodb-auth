@@ -21,7 +21,7 @@ module.exports = {
         return User.findOne({id: id})
             .populate("roles", "-__v")
             .then(user => {
-                if(!user) throw new CustomError(404, `User not found with user ID ${id}`)
+                if(!user) throw new CustomError(404, `User not found with user ID: ${id}`)
                 return(user);
             });
     },
@@ -30,12 +30,13 @@ module.exports = {
     updateOne: (id, body) => {
         return User.findOne({id: id})
             .then(user => {
-                if(!user) throw new CustomError(404, `User not found with user ID ${id}`);
+                if(!user) throw new CustomError(404, `User not found with user ID: ${id}`);
 
-                user.name = body.name;
-                user.dob = body.dob;
-                user.address = body.address;
-                user.description = body.description;
+                const {name, dob, address, description} = body;
+                user.name = name;
+                user.dob = dob;
+                user.address = address;
+                user.description = description;
 
                 return user.save()
                     .then(() => {
@@ -50,7 +51,7 @@ module.exports = {
             .then(() => {
                 return({statusCode: 200, message: "User was deleted successfully"});
             }).catch(err => {
-            if(err.name === 'NotFound') throw new CustomError(404, `User not found with user ID ${id}`);
+            if(err.name === 'NotFound') throw new CustomError(404, `User not found with user ID: ${id}`);
         });
     },
 

@@ -6,7 +6,7 @@ const logger = require("../utils/logger")(__filename);
 
 module.exports = {
     initDatabase: () => {
-        db.mongoose
+        return db.mongoose
             .connect(`mongodb://${dbConfig.HOST}:${dbConfig.PORT}/${dbConfig.DATABASE}`, {
                 useNewUrlParser: true,
                 useUnifiedTopology: true

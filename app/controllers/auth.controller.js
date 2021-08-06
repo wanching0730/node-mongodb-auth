@@ -3,8 +3,6 @@
 2. Login: Check whether user exists in database, verify password, generate an access token and return to user
 */
 
-const bcrypt = require("bcryptjs");
-
 const db = require("../models");
 const User = db.user;
 
@@ -15,43 +13,47 @@ const {register, login} = require("../services/auth.service");
 
 module.exports = {
     register: async (req, res) => {
-        let author = req.url.includes("admin") ? "Admin" : "User";
+        const author = req.url.includes("admin") ? "Admin" : "User";
         logger.audit(`${author}: Registering new user`);
+
+        const {id, name, password, dob, address, description} = req.body;
 
         // Validate request before passing to database
         // check user ID
-        if (!req.body.id) throw new CustomError(400, "Error: User ID cannot be empty");
+        if (!id) throw new CustomError(400, "Error: User ID cannot be empty for registration");
 
         // check user name
-        if (!req.body.name) throw new CustomError(400, "Error: User name cannot be empty");
+        if (!name) throw new CustomError(400, "Error: User name cannot be empty for registration");
 
         // check D.O.B format
         if (!validateDOB) throw new CustomError(400, "Error: Date of Birth should be in mm/dd/yyyy format");
 
+
         const user = new User({
-            id: req.body.id,
-            name: req.body.name,
-            password: bcrypt.hashSync(req.body.password, 8),
-            dob: req.body.dob,
-            address: req.body.address,
-            description: req.body.description
+            id: id,
+            name: name,
+            password: password,
+            dob: dob,
+            address: address,
+            description: description
         });
 
-        let {statusCode, message} = await register(user, req.body.roles);
+        const {statusCode, message} = await register(user, req.body.roles);
         res.status(statusCode).send({message: message});
     },
 
     login: async (req, res) => {
-        let id = req.body.id
+        const {id, password} = req.body;
+
         logger.audit(`User ${id} logging in`)
 
         // check user ID
         if (!id) throw new CustomError(400, "Error: User ID cannot be empty for authentication");
 
         // check user password
-        if (!req.body.password) throw new CustomError(400, "Error: User password cannot be empty for authentication");
+        if (!password) throw new CustomError(400, "Error: User password cannot be empty for authentication");
 
-        let {statusCode, body} = await login(id, req.body.password);
+        const {statusCode, body} = await login(id, password);
         res.status(statusCode).send({body});
     }
 };

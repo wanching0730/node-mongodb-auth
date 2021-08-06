@@ -1,4 +1,5 @@
-const { verifyNewUser, verifyRoles } = require("../middleware/verifyRegistration");
+const {verifyNewUser, verifyRoles} = require("../middleware/verifyRegistration");
+const {refreshToken} = require("../middleware/authenticate");
 const {login, register} = require("../controllers/auth.controller");
 
 module.exports = function(app) {
@@ -12,4 +13,5 @@ module.exports = function(app) {
 
     app.post("/auth/register", [verifyNewUser, verifyRoles], register);
     app.post("/auth/login", login);
+    app.post("/auth/refreshToken", refreshToken);
 };

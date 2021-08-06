@@ -32,11 +32,10 @@ module.exports = {
             .then(user => {
                 if(!user) throw new CustomError(404, `User not found with user ID: ${id}`);
 
-                const {name, dob, address, description} = body;
-                user.name = name;
-                user.dob = dob;
-                user.address = address;
-                user.description = description;
+                for (let key in body) {
+                    if (body.hasOwnProperty(key))
+                        user[key] = body[key];
+                }
 
                 return user.save()
                     .then(() => {

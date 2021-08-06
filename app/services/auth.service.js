@@ -5,7 +5,9 @@ Database logic for authentication
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-const config = require("../config/auth.config");
+const {secret, jwtExpiration, jwtRefreshExpiration} = require("../config/auth.config");
+const {updateOne} = require("../services/user.service");
+
 const db = require("../models");
 const User = db.user;
 const Role = db.role;
@@ -52,49 +54,55 @@ module.exports = {
         }
     },
 
-    login: (id, password) => {
+    login: async (id, password) => {
         if (!id) throw new CustomError(400, "Error: User ID cannot be empty for authentication");
         if (!password) throw new CustomError(400, "Error: User password cannot be empty for authentication");
 
         // check whether user exists in database
-        return User.findOne({
-            id: id
-        })
+        let user = await User.findOne({id: id})
             .populate("roles", "-__v")
-            .exec()
-            .then(user => {
-                if (!user) throw new CustomError(401, "Error: Invalid user");
+            .exec();
 
-                // verify password
-                let passwordIsValid = bcrypt.compareSync(
-                    password,
-                    user.password
-                );
+        if (!user) throw new CustomError(401, "Error: Invalid user");
 
-                if (!passwordIsValid) {
-                    logger.error("Error: Invalid password");
-                    throw new CustomError(401, "Error: Invalid password");
-                }
+        // verify password
+        let passwordIsValid = bcrypt.compareSync(
+            password,
+            user.password
+        );
 
-                // generate new access token with user's ID and user's roles
-                let token = jwt.sign({ id: user.id, roles: user.roles.map(r => r.name) }, config.secret, {
-                    expiresIn: 3600 // 1 hour
-                });
+        if (!passwordIsValid) {
+            logger.error("Error: Invalid password");
+            throw new CustomError(401, "Error: Invalid password");
+        }
 
-                let authorities = [];
+        // generate access token with user's ID and user's roles
+        const token = jwt.sign({id: user.id, roles: user.roles.map(r => r.name)}, secret, {
+            expiresIn: jwtExpiration // 1 hour
+        });
 
-                for (let i = 0; i < user.roles.length; i++) {
-                    authorities.push(user.roles[i].name);
-                }
+        // generate refresh token with user's ID
+        const refreshToken = jwt.sign({id: user.id}, secret, {
+            expiresIn: jwtRefreshExpiration // 24 hours
+        });
 
-                logger.audit(`User ${id} logged in successfully`)
-                return({statusCode: 200, body: {
-                    id: user.id,
-                    name: user.name,
-                    roles: authorities,
-                    accessToken: token
-                }});
-            });
+        // update user's refresh token in database
+        await updateOne(id, {refreshToken: refreshToken});
+        logger.audit(`Refresh token is updated to database successfully`);
+
+        // populate user's roles
+        let authorities = [];
+        for (let i = 0; i < user.roles.length; i++) {
+            authorities.push(user.roles[i].name);
+        }
+
+        logger.audit(`User ${id} logged in successfully`)
+        return ({
+            statusCode: 200, body: {
+                id: user.id, name: user.name, roles: authorities,
+                accessToken: token, refreshToken: refreshToken
+            }
+        });
     }
 };
 

@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
     dob: String, // date of birth: mm/dd/yyyy format
     address: String, // user address
     description: String, // user description
+    refreshToken: String, // for authentication purpose
     roles: [
         {
             type: String,

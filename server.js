@@ -24,7 +24,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // connect to MongoDB
-await initDatabase();
+initDatabase();
 
 // routes
 require('./app/routes/auth.routes')(app);

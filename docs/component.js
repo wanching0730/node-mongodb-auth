@@ -18,7 +18,7 @@ module.exports = {
                     password: {
                         type: "string",
                         description: "User's encrypted password for authentication",
-                        example: false,
+                        example: "12345",
                     },
                     dob: {
                         type: "string",
@@ -126,11 +126,6 @@ module.exports = {
                         description: "User's name",
                         example: "Coco Tan",
                     },
-                    password: {
-                        type: "string",
-                        description: "User's encrypted password for authentication",
-                        example: false,
-                    },
                     dob: {
                         type: "string",
                         description: "User's date of birth",
@@ -146,6 +141,22 @@ module.exports = {
                         description: "Short description about user",
                         example: "Mid-senior level Software Engineer",
                     }
+                }
+            },
+            // Model for login input
+            LoginInput: {
+                type: "object",
+                properties: {
+                    id: {
+                        type: "string",
+                        description: "User's ID",
+                        example: "bobo",
+                    },
+                    password: {
+                        type: "string",
+                        description: "User's encrypted password for authentication",
+                        example: "12345",
+                    },
                 }
             },
             // id model

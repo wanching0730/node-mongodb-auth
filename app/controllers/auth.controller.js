@@ -70,6 +70,13 @@ module.exports = {
 
     login: (req, res) => {
         logger.audit(`User ${req.body.id} logging in`)
+
+        // check user ID
+        if(!id) throw new CustomError(400, "Error: User ID cannot be empty for authentication");
+
+        // check user password
+        if(!req.body.password) throw new CustomError(400, "Error: User password cannot be empty for authentication");
+
         // check whether user exists in database
         User.findOne({
             id: req.body.id

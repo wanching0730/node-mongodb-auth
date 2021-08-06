@@ -12,7 +12,7 @@ module.exports = {
                 useUnifiedTopology: true
             })
             .then(() => {
-                logger.info("Successfully connected to MongoDB");
+                logger.info(`Successfully connected to MongoDB: ${dbConfig.DATABASE}`);
                 initialiseRoles();
             })
             .catch(err => {

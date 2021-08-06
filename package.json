@@ -4,8 +4,8 @@
   "description": "Technical assessment - RESTful API with authentication ",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js",
-    "test": "mocha './test/**/*.test.js'"
+    "start": "NODE_ENV=dev nodemon server.js",
+    "test": "NODE_ENV=test mocha './test/**/*.test.js'"
   },
   "keywords": [
     "Node",

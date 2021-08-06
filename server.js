@@ -62,10 +62,8 @@ app.use((err, req, res, next) => {
     return next();
 })
 
-// API documentation using Swagger
+// set up Swagger for API documentation
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(docs));
-// const specs = swaggerJsdoc(options);
-// app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
 
 // set port, listen for requests
 const PORT = process.env.PORT;

@@ -69,7 +69,8 @@ module.exports = {
     },
 
     login: (req, res) => {
-        logger.audit(`User ${req.body.id} logging in`)
+        let id = req.body.id
+        logger.audit(`User ${id} logging in`)
 
         // check user ID
         if(!id) throw new CustomError(400, "Error: User ID cannot be empty for authentication");
@@ -79,7 +80,7 @@ module.exports = {
 
         // check whether user exists in database
         User.findOne({
-            id: req.body.id
+            id: id
         })
         .populate("roles", "-__v")
         .exec()
@@ -108,7 +109,7 @@ module.exports = {
                 authorities.push(user.roles[i].name);
             }
 
-            logger.audit(`User ${req.body.id} logged in successfully`)
+            logger.audit(`User ${id} logged in successfully`)
             res.status(200).send({
                 id: user.user_id,
                 name: user.name,

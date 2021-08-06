@@ -9,6 +9,7 @@ const adminGetUsers = require('./admin/get-user');
 const adminGetAllUsers = require('./admin/get-all-users');
 const adminUpdateUsers = require('./admin/update-user');
 const adminDeleteUsers = require('./admin/delete-user');
+const adminDeleteAllUsers = require('./admin/delete-all-users');
 
 module.exports = {
     paths:{
@@ -24,7 +25,8 @@ module.exports = {
             ...login
         },
         '/admin/users':{
-            ...adminGetAllUsers
+            ...adminGetAllUsers,
+            ...adminDeleteAllUsers
         },
         '/admin/users/{id}':{
             ...adminGetUsers,

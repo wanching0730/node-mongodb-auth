@@ -1,6 +1,6 @@
 const { verifyToken } = require("../middleware/authenticate");
 const { isAdmin } = require("../middleware/authorize");
-const {findAll, findOne, updateOne, deleteOne} = require("../controllers/user.controller");
+const {findAll, findOne, updateOne, deleteOne, deleteAll} = require("../controllers/user.controller");
 const {asyncHandler} = require("../utils/error-handler")
 
 module.exports = function(app) {
@@ -24,4 +24,5 @@ module.exports = function(app) {
     app.get("/admin/users", asyncHandler(findAll));
     app.put("/admin/users/:id", asyncHandler(updateOne));
     app.delete("/admin/users/:id", asyncHandler(deleteOne));
+    app.delete("/admin/users", asyncHandler(deleteAll));
 };

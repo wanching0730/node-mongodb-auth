@@ -78,6 +78,16 @@ module.exports = {
             }).catch(err => {
                 if(err.name === 'NotFound') throw new CustomError(404, `User not found with user ID ${id}`);
             });
+    },
+
+    // Delete all users
+    deleteAll: (req, res) => {
+        logger.info("Admin: Deleting all user");
+
+        User.deleteMany({})
+            .then(() => {
+                res.status(200).send({message: "All users were deleted successfully"});
+            })
     }
 };
 

@@ -35,5 +35,8 @@
     "swagger-ui-express": "^4.1.6",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.5"
+  },
+  "devDependencies": {
+    "start-server-and-test": "^1.13.1"
   }
 }

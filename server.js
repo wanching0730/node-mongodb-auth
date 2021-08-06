@@ -2,18 +2,12 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
-const swaggerJsdoc = require("swagger-jsdoc");
 const swaggerUI = require("swagger-ui-express");
-const {options} = require("./docs/basicInfo");
 const docs = require('./docs');
 
+const {initDatabase} = require("./app/utils/init-database");
 const CustomError = require("./app/utils/custom-error");
 const logger = require("./app/utils/logger")(__filename);
-
-const dbConfig = require ("./app/config/db.config");
-const db = require("./app/models");
-const Role = db.role;
-const ROLES = db.ROLES;
 
 const app = express();
 
@@ -30,19 +24,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // connect to MongoDB
-db.mongoose
-    .connect(`${dbConfig.URI}`, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    })
-    .then(() => {
-        logger.info("Successfully connected to MongoDB");
-        initialiseRoles();
-    })
-    .catch(err => {
-        logger.error("MongoDB connection error", err);
-        process.exit();
-    });
+initDatabase();
 
 // routes
 require('./app/routes/auth.routes')(app);
@@ -71,16 +53,4 @@ app.listen(PORT, () => {
     logger.info(`Server is running on port ${PORT}.`);
 });
 
-// initialise types of roles in MongoDB collection
-function initialiseRoles() {
-    Role.collection.estimatedDocumentCount((err, count) => {
-        if (!err && count === 0) {
-            for (const role of ROLES) {
-                new Role({
-                    name: role
-                }).save();
-                logger.info(`Added ${role} to Role collection`);
-            }
-        }
-    });
-}
+

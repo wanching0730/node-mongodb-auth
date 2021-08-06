@@ -76,7 +76,7 @@ module.exports = {
             .then(() => {
                 res.status(200).send({message: "User was deleted successfully"});
             }).catch(err => {
-                if(err.name === 'NotFound') throw new CustomError(400, `User not found with user ID ${id}`);
+                if(err.name === 'NotFound') throw new CustomError(404, `User not found with user ID ${id}`);
             });
     }
 };

@@ -2,8 +2,13 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
+const swaggerJsdoc = require("swagger-jsdoc");
+const swaggerUI = require("swagger-ui-express");
+const {options} = require("./docs/basicInfo");
+const docs = require('./docs');
+
 const CustomError = require("./app/utils/custom-error");
-const logger = require("./app/utils/logger")(__filename)
+const logger = require("./app/utils/logger")(__filename);
 
 const dbConfig = require ("./app/config/db.config");
 const db = require("./app/models");
@@ -56,6 +61,11 @@ app.use((err, req, res, next) => {
     }
     return next();
 })
+
+// API documentation using Swagger
+app.use('/api-docs',swaggerUI.serve,swaggerUI.setup(docs));
+// const specs = swaggerJsdoc(options);
+// app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
 
 // set port, listen for requests
 const PORT = process.env.PORT;

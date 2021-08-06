@@ -73,7 +73,7 @@ describe("Auth Controller", function() {
     });
 
     describe("Success response for Register actions", function() {
-        it("Should be able to register user with valid input",  async function() {
+        it("Should be able to register user with valid input with roles",  async function() {
             const user = new User({
                 id: "test user id",
                 name: "test user name",
@@ -84,6 +84,21 @@ describe("Auth Controller", function() {
             });
 
             const response = await register(user, ["admin"]);
+            expect(response.statusCode).to.equal(200);
+            expect(response.message).to.equal("User was registered successfully");
+        });
+
+        it("Should be able to register user with valid input without roles (as normal user)",  async function() {
+            const user = new User({
+                id: "test normal user id",
+                name: "test normal user name",
+                password: "12345",
+                dob: "07/30/1997",
+                address: "test normal user address",
+                description: "test normal user description"
+            });
+
+            const response = await register(user, null);
             expect(response.statusCode).to.equal(200);
             expect(response.message).to.equal("User was registered successfully");
         });

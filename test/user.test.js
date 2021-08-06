@@ -54,7 +54,7 @@ describe("User Controller", function() {
         it("Should be able to retrieve details of all users",  async function() {
             const users = await findAll();
 
-            expect(users.length).to.equal(1);
+            expect(users.length).to.equal(2);
         });
 
         it("Should be able to retrieve user details with correct ID",  async function() {

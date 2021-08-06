@@ -63,7 +63,7 @@ app.use((err, req, res, next) => {
 })
 
 // API documentation using Swagger
-app.use('/api-docs',swaggerUI.serve,swaggerUI.setup(docs));
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(docs));
 // const specs = swaggerJsdoc(options);
 // app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
 

@@ -147,7 +147,13 @@ module.exports = {
                         example: "Mid-senior level Software Engineer",
                     }
                 }
-            }
+            },
+            // id model
+            id: {
+                type: "string", // data type
+                description: "An ID of a user", // desc
+                example: "bobo", // example of an id
+            },
         },
     },
 };

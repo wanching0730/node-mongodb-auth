@@ -1,13 +1,13 @@
 const basicInfo = require('./basicInfo');
-const servers = require('./servers');
 const components = require('./component');
+const servers = require('./servers');
 const tags = require('./tags');
-const todos = require('./users');
+const routes = require('./routes');
 
 module.exports = {
     ...basicInfo,
-    ...servers,
     ...components,
+    ...servers,
     ...tags,
-    ...todos
+    ...routes,
 };

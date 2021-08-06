@@ -12,21 +12,14 @@ const logger = require("../utils/logger")(__filename)
 
 module.exports = {
     // check duplications for user ID
-    verifyNewUser: (req, res, next) => {
+    verifyNewUser: async (req, res, next) => {
         logger.audit("Verifying new user");
 
         // check duplicate username
-        User.findOne({
-            id: req.body.id
-        })
-        .exec()
-        .then(user => {
-            if (user) {
-                throw new CustomError(400, "Error: User ID is already in used");
-                return;
-            }
-            next();
-        });
+        const user = await User.findOne({id: req.body.id}).exec();
+
+        if (user) throw new CustomError(400, "Error: User ID is already in used");
+        next();
     },
     // check if roles in request exists in our database or not
     verifyRoles: (req, res, next) => {
@@ -35,10 +28,8 @@ module.exports = {
         // compare the provided role with the roles in our database
         if (req.body.roles) {
             for (let i = 0; i < req.body.roles.length; i++) {
-                if (!ROLES.includes(req.body.roles[i])) {
+                if (!ROLES.includes(req.body.roles[i]))
                     throw new CustomError(400, `Error: Role ${req.body.roles[i]} does not exist`);
-                    return;
-                }
             }
             next();
         }

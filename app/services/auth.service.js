@@ -16,7 +16,7 @@ const CustomError = require("../utils/custom-error");
 const logger = require("../utils/logger")(__filename);
 
 module.exports = {
-    register: (user, roles) => {
+    register: async (user, roles) => {
         if (!user.id) throw new CustomError(400, "Error: User ID cannot be empty for registration");
         if (!user.name) throw new CustomError(400, "Error: User name cannot be empty for registration");
 
@@ -25,32 +25,26 @@ module.exports = {
             // if user is admin
             logger.info("Database: Retrieving new user's role");
 
-            return Role.find({name: {$in: roles}})
-                .then(roles => {
-                    if(roles.length === 0) throw new CustomError(400, "Error: Roles provided are invalid");
+            let validRoles = await Role.find({name: {$in: roles}});
+            if (validRoles.length === 0) throw new CustomError(400, "Error: Roles provided are invalid");
 
-                    // save user's details
-                    user.roles = roles.map(role => role._id);
-                    user.password = bcrypt.hashSync(user.password, 8);
-                    return user.save()
-                        .then(() => {
-                            return ({statusCode: 200, message: "User was registered successfully"});
-                        })
-                })
+            // save user's details
+            console.log(validRoles)
+            user.roles = validRoles.map(role => role._id);
+            user.password = bcrypt.hashSync(user.password, 8);
+            await user.save();
+
+            return ({statusCode: 200, message: "User was registered successfully"});
         } else {
             // if user is normal user
             logger.info("Database: Retrieving new user's role as normal user");
 
-            return Role.findOne({name: "user"})
-                .then(role => {
-                    // save user's details
-                    user.roles = [role._id];
-                    user.password = bcrypt.hashSync(user.password, 8);
-                    return user.save()
-                        .then(() => {
-                            return ({statusCode: 200, message: "User was registered successfully"});
-                        })
-                });
+            let validRole = await Role.findOne({name: "user"});
+            user.roles = [validRole._id];
+            user.password = bcrypt.hashSync(user.password, 8);
+            await user.save();
+
+            return ({statusCode: 200, message: "User was registered successfully"});
         }
     },
 

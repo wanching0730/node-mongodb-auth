@@ -26,9 +26,9 @@ module.exports = {
         });
     },
     refreshToken: (req, res, next) => {
-         return jwt.verify(req.body.refreshToken, secret, async (err, decoded) => {
-            if (err instanceof JsonWebTokenError) throw new CustomError(401, "Error: Invalid refresh token");
+        return jwt.verify(req.body.refreshToken, secret, async (err, decoded) => {
             if (err instanceof TokenExpiredError) throw new CustomError(401, "Error: Refresh token was expired");
+            if (err instanceof JsonWebTokenError) throw new CustomError(401, "Error: Invalid refresh token");
 
             const {id, roles, refreshToken} = await findOne(decoded.id);
 

@@ -4,6 +4,7 @@ const deleteUser = require('./users/delete-user');
 
 const register = require('./auth/register');
 const login = require('./auth/login');
+const logout = require('./auth/logout');
 const refreshToken = require('./auth/refreshToken');
 
 const adminGetUsers = require('./admin/get-user');
@@ -24,6 +25,9 @@ module.exports = {
         },
         '/login':{
             ...login
+        },
+        '/logout':{
+            ...logout
         },
         '/refreshToken':{
             ...refreshToken

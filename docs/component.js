@@ -196,6 +196,17 @@ module.exports = {
                     },
                 }
             },
+            // Model for logout input
+            LogoutInput: {
+                type: "object",
+                properties: {
+                    id: {
+                        type: "string",
+                        description: "User's ID",
+                        example: "bobo",
+                    }
+                }
+            },
             // Model for refresh login input
             RefreshLoginInput: {
                 type: "object",

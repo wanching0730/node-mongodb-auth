@@ -34,15 +34,20 @@ module.exports = {
         let userLocation = await User.findOne({id: userId});
 
         let nearbyFriends = await User.find({
-            location: {
-                $near: {
-                    $maxDistance: distance, // unit in meters
-                    $geometry: {
-                        type: "Point",
-                        coordinates: userLocation.location.coordinates
+            $and: [{
+                location: {
+                    $near: {
+                        $maxDistance: distance, // unit in meters
+                        $geometry: {
+                            type: "Point",
+                            coordinates: userLocation.location.coordinates
+                        }
                     }
                 }
-            }
+            },
+            {
+                id: {$ne: userId}
+            }]
         });
 
         return (nearbyFriends);

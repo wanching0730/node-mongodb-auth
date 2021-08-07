@@ -27,7 +27,7 @@ module.exports = {
         await asyncHandler(verifyNewUser(req.body.id));
         await asyncHandler(verifyRoles(req.body.roles));
 
-        const {id, name, password, dob, address, description} = req.body;
+        const {id, name, password, dob, address, location, description} = req.body;
 
         // Validate request before passing to database
         // check user ID
@@ -48,6 +48,7 @@ module.exports = {
             password: password,
             dob: dob,
             address: address,
+            location: location,
             description: description
         });
 

@@ -1,5 +1,8 @@
 /*
-Database logic to find followers of user and who the user is following
+Database logic to find:
+1. Followers of user
+2. Who the user is following
+3. Nearby friends of the user within specific distance (in meters)
 */
 
 const db = require("../models");
@@ -25,5 +28,23 @@ module.exports = {
 
         let followers = await User.find({id: {$in: followerIds}});
         return (followers);
+    },
+
+    findNearbyFriends: async(userId, distance) => {
+        let userLocation = await User.findOne({id: userId});
+
+        let nearbyFriends = await User.find({
+            location: {
+                $near: {
+                    $maxDistance: distance, // unit in meters
+                    $geometry: {
+                        type: "Point",
+                        coordinates: userLocation.location.coordinates
+                    }
+                }
+            }
+        });
+
+        return (nearbyFriends);
     }
 }

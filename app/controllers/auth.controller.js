@@ -12,7 +12,7 @@ const User = db.user;
 const CustomError = require("../utils/custom-error");
 const logger = require("../utils/logger")(__filename);
 
-const {validateDOB} = require("../utils/validate");
+const {validateDOB, validatePassword} = require("../utils/validate");
 const {register, login} = require("../services/auth.service");
 const {updateOne, findOne} = require("../services/user.service");
 const {secret, jwtExpiration, jwtRefreshExpiration} = require("../config/auth.config");
@@ -31,9 +31,11 @@ module.exports = {
         // check user name
         if (!name) throw new CustomError(400, "Error: User name cannot be empty for registration");
 
+        // // check password format
+        // if (!validatePassword(password)) throw new CustomError(400, "Error: Password should be in alphanumeric format");
+
         // check D.O.B format
         if (!validateDOB(dob)) throw new CustomError(400, "Error: Date of Birth should be in mm/dd/yyyy format");
-
 
         const user = new User({
             id: id,

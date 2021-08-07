@@ -1,7 +1,7 @@
 const { verifyToken } = require("../middleware/authenticate");
 const { isAdmin } = require("../middleware/authorize");
 const {findAll, findOne, updateOne, deleteOne, deleteAll} = require("../controllers/user.controller");
-const {asyncHandler} = require("../utils/error-handler")
+const {asyncHandler} = require("../utils/error-handler");
 
 module.exports = function(app) {
     app.use(function(req, res, next) {

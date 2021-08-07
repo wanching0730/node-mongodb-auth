@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 
 const {secret, jwtExpiration, jwtRefreshExpiration} = require("../config/auth.config");
 const {updateOne} = require("../services/user.service");
-const {validateDOB} = require("../utils/validate");
+const {validateDOB, validatePassword} = require("../utils/validate");
 
 const db = require("../models");
 const User = db.user;
@@ -20,6 +20,7 @@ module.exports = {
     register: async (user, roles) => {
         if (!user.id) throw new CustomError(400, "Error: User ID cannot be empty for registration");
         if (!user.name) throw new CustomError(400, "Error: User name cannot be empty for registration");
+        //if (!validatePassword(user.password)) throw new CustomError(400, "Error: Password should be in alphanumeric format");
         if (!validateDOB(user.dob)) throw new CustomError(400, "Error: Date of Birth should be in mm/dd/yyyy format");
 
         // save user's roles by getting role_id from database

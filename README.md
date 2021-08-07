@@ -17,8 +17,12 @@
 | docs  | Documentation  | Changes on Documentation
 
 ## Run
+```
 $ npm install
 $ npm run start
+```
 
 ## Test
+```
 $ npm run test
+```

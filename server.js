@@ -34,11 +34,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // connect to MongoDB
 initDatabase();
 
-// routes
+// set up routes
 require('./app/routes/auth.routes')(app);
 require('./app/routes/user.routes')(app);
+require('./app/routes/follow.routes')(app);
 
-// error handling
+// set up error handling
 app.use((err, req, res, next) => {
     if (err instanceof CustomError) {
         // handle custom error message

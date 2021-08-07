@@ -47,7 +47,7 @@ describe("Auth Controller", function() {
                     description: "test user description"
                 });
 
-                await register(user, ["moderator"]);
+                await register(user, ["admin"]);
             } catch(err) {
                 expect(err.statusCode).to.equal(400);
                 expect(err.message).to.equal("Error: User ID cannot be empty for registration");
@@ -64,10 +64,28 @@ describe("Auth Controller", function() {
                     description: "test user description"
                 });
 
-                await register(user, ["moderator"]);
+                await register(user, ["admin"]);
             } catch(err) {
                 expect(err.statusCode).to.equal(400);
                 expect(err.message).to.equal("Error: User name cannot be empty for registration");
+            }
+        });
+
+        it("Should not be able to register user without correct D.O.B format",  async function() {
+            try {
+                const user = new User({
+                    id: "test user id",
+                    name: "test user name",
+                    password: "12345",
+                    dob: "30/07/1997",
+                    address: "test user address",
+                    description: "test user description"
+                });
+
+                await register(user, ["admin"]);
+            } catch(err) {
+                expect(err.statusCode).to.equal(400);
+                expect(err.message).to.equal("Error: Date of Birth should be in mm/dd/yyyy format");
             }
         });
     });

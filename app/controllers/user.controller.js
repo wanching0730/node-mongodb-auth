@@ -39,7 +39,7 @@ module.exports = {
         if (!req.body.name) throw new CustomError(400, "Error: User name cannot be empty");
 
         // check D.O.B format
-        if (!validateDOB) throw new CustomError(400, "Error: Date of Birth should be in mm/dd/yyyy format");
+        if (!validateDOB(req.body.dob)) throw new CustomError(400, "Error: Date of Birth should be in mm/dd/yyyy format");
 
         const {statusCode, message} = await updateOne(id, req.body);
         res.status(statusCode).send({message: message});

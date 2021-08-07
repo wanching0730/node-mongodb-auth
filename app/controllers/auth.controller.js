@@ -28,7 +28,7 @@ module.exports = {
         if (!name) throw new CustomError(400, "Error: User name cannot be empty for registration");
 
         // check D.O.B format
-        if (!validateDOB) throw new CustomError(400, "Error: Date of Birth should be in mm/dd/yyyy format");
+        if (!validateDOB(dob)) throw new CustomError(400, "Error: Date of Birth should be in mm/dd/yyyy format");
 
 
         const user = new User({

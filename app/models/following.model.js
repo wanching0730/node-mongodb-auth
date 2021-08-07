@@ -6,6 +6,8 @@ const followingSchema = new mongoose.Schema({
     following_id: String, // the target user's ID that this user is following: required field
 }, { collection: 'following' });
 
+followingSchema.index({ user_id: 1 });
+followingSchema.index({ following_id: 1 });
 const Following = mongoose.model("Following", followingSchema);
 
 module.exports = Following;

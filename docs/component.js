@@ -218,6 +218,38 @@ module.exports = {
                     }
                 }
             },
+            // Model for FindNearbyFriends input
+            FindNearbyFriendsInput: {
+                type: "object",
+                properties: {
+                    userId: {
+                        type: "string",
+                        description: "User's ID",
+                        example: "bobo",
+                    },
+                    distance: {
+                        type: "integer",
+                        description: "Distance in meter",
+                        example: 9000,
+                    },
+                }
+            },
+            // Model for CreateFollowing input
+            CreateFollowingInput: {
+                type: "object",
+                properties: {
+                    userId: {
+                        type: "string",
+                        description: "User's ID",
+                        example: "bobo",
+                    },
+                    followingId: {
+                        type: "string",
+                        description: "ID of user's following people",
+                        example: "coco",
+                    },
+                }
+            },
             // id model
             id: {
                 type: "string", // data type

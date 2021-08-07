@@ -32,6 +32,8 @@ module.exports = {
 
     findNearbyFriends: async(userId, distance) => {
         const userLocation = await User.findOne({id: userId});
+
+        // only people that user is following are considered "friends"
         let following = await module.exports.findFollowing(userId);
         following = following.map(f => f.id).filter(f => f.id !== userId);
 

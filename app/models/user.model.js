@@ -24,6 +24,7 @@ const userSchema = new mongoose.Schema({
     ] // user role(s)
 }, { collection: 'users' });
 
+userSchema.index({ id: 1 });
 userSchema.set('timestamps', true);
 const User = mongoose.model("User", userSchema);
 

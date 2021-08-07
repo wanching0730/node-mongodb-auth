@@ -36,8 +36,6 @@ module.exports = {
             user.roles = validRoles.map(role => role._id);
             user.password = bcrypt.hashSync(user.password, 8);
             await User.create(user);
-
-            return ({statusCode: 200, message: "User was registered successfully"});
         } else {
             // if user is normal user
             logger.info("Database: Retrieving new user's role as normal user");
@@ -46,8 +44,6 @@ module.exports = {
             user.roles = [validRole._id];
             user.password = bcrypt.hashSync(user.password, 8);
             await User.create(user);
-
-            return ({statusCode: 200, message: "User was registered successfully"});
         }
     },
 

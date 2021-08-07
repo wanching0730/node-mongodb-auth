@@ -52,8 +52,8 @@ module.exports = {
             description: description
         });
 
-        const {statusCode, message} = await register(user, req.body.roles);
-        res.status(statusCode).send({message: message});
+        await register(user, req.body.roles);
+        res.status(200).send({message: "User was registered successfully"});
     },
 
     login: async (req, res) => {

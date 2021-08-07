@@ -16,7 +16,7 @@ module.exports = {
 
     // Find a single user with a user ID
     findOne: async (id) => {
-        const user = await User.findOne({id: id})
+        const user = await User.findOne({id})
             .populate("roles", "-__v");
 
         if (!user) throw new CustomError(404, `User not found with user ID: ${id}`)
@@ -25,24 +25,17 @@ module.exports = {
 
     // Update a user identified by the user ID in the request
     updateOne: async (id, body) => {
-        let user = await User.findOne({id: id});
+        let user = await User.findOne({id});
 
         if (!user) throw new CustomError(404, `User not found with user ID: ${id}`);
 
-        for (let key in body) {
-            if (body.hasOwnProperty(key))
-                user[key] = body[key];
-        }
-
-        await user.save();
-        return ({statusCode: 200, message: "User was updated successfully"});
+        await User.findOneAndUpdate({id}, body, {useFindAndModify: false});
     },
 
     // Delete a user with the specified user ID in the request
     deleteOne: async (id) => {
         try {
-            await User.deleteOne({id: id});
-            return ({statusCode: 200, message: "User was deleted successfully"});
+            await User.findOneAndDelete({id}, {useFindAndModify: false});
         } catch (err) {
             if (err.name === 'NotFound') throw new CustomError(404, `User not found with user ID: ${id}`);
         }
@@ -51,7 +44,6 @@ module.exports = {
     // Delete all users
     deleteAll: async (req, res) => {
         await User.deleteMany({});
-        return ({statusCode: 200, message: "All users were deleted successfully"});
     }
 };
 

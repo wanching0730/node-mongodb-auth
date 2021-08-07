@@ -68,31 +68,35 @@ describe("User Controller", function() {
         });
 
         it("Should be able to update user details with correct ID",  async function() {
-            const user = new User({
-                name: "test user name",
-                dob: "07/30/1997",
-                address: "test user address",
-                description: "test user description"
-            });
+            const user = {
+                name: "update user name",
+                address: "update user address",
+                description: "update user description"
+            };
 
-            const response = await updateOne("test user id", user);
+            await updateOne("test user id", user);
+            let updatedUser = await findOne("test user id");
 
-            expect(response.statusCode).to.equal(200);
-            expect(response.message).to.equal("User was updated successfully");
+            expect(updatedUser.name).to.equal(user.name);
+            expect(updatedUser.address).to.equal(user.address);
+            expect(updatedUser.description).to.equal(user.description);
         });
 
         it("Should be able to delete user details with correct ID",  async function() {
-            const response = await deleteOne("test user id");
-
-            expect(response.statusCode).to.equal(200);
-            expect(response.message).to.equal("User was deleted successfully");
+            try {
+                await deleteOne("test user id");
+                await findOne("test user id");
+            } catch(err) {
+                expect(err.statusCode).to.equal(404);
+                expect(err.message).to.equal("User not found with user ID: test user id");
+            }
         });
 
         it("Should be able to delete all users",  async function() {
-            const response = await deleteAll();
+            await deleteAll();
+            let response = await findAll();
 
-            expect(response.statusCode).to.equal(200);
-            expect(response.message).to.equal("All users were deleted successfully");
+            expect(response.length).to.equal(0);
         });
     })
 });

@@ -41,8 +41,8 @@ module.exports = {
         // check D.O.B format
         if (!validateDOB(req.body.dob)) throw new CustomError(400, "Error: Date of Birth should be in mm/dd/yyyy format");
 
-        const {statusCode, message} = await updateOne(id, req.body);
-        res.status(statusCode).send({message: message});
+        await updateOne(id, req.body);
+        res.status(200).send({message: "User was updated successfully"});
     },
 
     // Delete a user with the specified user ID in the request
@@ -52,16 +52,16 @@ module.exports = {
         const author = req.url.includes("admin") ? "Admin" : res.locals.id;
         logger.info(`${author}: Deleting one user`);
 
-        const {statusCode, message} = await deleteOne(id);
-        res.status(statusCode).send({message: message});
+        await deleteOne(id);
+        res.status(200).send({message: "User was deleted successfully"});
     },
 
     // Delete all users
     deleteAll: async (req, res) => {
         logger.info("Admin: Deleting all user");
 
-        const {statusCode, message} = await deleteAll();
-        res.status(statusCode).send({message: message});
+        await deleteAll();
+        res.status(200).send({message: "All users were deleted successfully"});
     }
 };
 

@@ -8,9 +8,10 @@ const jwt = require("jsonwebtoken");
 const { TokenExpiredError, JsonWebTokenError } = jwt;
 
 const CustomError = require("../utils/custom-error");
+const logger = require("../utils/logger")(__filename);
+
 const {findOne, updateOne} = require("../services/user.service");
 const {secret, jwtExpiration, jwtRefreshExpiration} = require("../config/auth.config");
-const logger = require("../utils/logger")(__filename);
 
 module.exports = {
     verifyToken: (req, res, next) => {

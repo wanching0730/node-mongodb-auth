@@ -8,7 +8,7 @@ const ROLES = db.ROLES;
 const User = db.user;
 
 const CustomError = require("../utils/custom-error");
-const logger = require("../utils/logger")(__filename)
+const logger = require("../utils/logger")(__filename);
 
 module.exports = {
     // check duplications for user ID

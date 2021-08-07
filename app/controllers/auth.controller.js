@@ -6,9 +6,10 @@
 const db = require("../models");
 const User = db.user;
 
-const {validateDOB} = require("../utils/validate");
 const CustomError = require("../utils/custom-error");
 const logger = require("../utils/logger")(__filename);
+
+const {validateDOB} = require("../utils/validate");
 const {register, login} = require("../services/auth.service");
 const {updateOne} = require("../services/user.service");
 

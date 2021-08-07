@@ -4,6 +4,7 @@ Business logic and validation for User collection
 
 const CustomError = require("../utils/custom-error");
 const logger = require("../utils/logger")(__filename);
+
 const {validateDOB} = require("../utils/validate");
 const {findAll, findOne, updateOne, deleteOne, deleteAll} = require("../services/user.service");
 

@@ -29,7 +29,6 @@ module.exports = {
             if (validRoles.length === 0) throw new CustomError(400, "Error: Roles provided are invalid");
 
             // save user's details
-            console.log(validRoles)
             user.roles = validRoles.map(role => role._id);
             user.password = bcrypt.hashSync(user.password, 8);
             await user.save();

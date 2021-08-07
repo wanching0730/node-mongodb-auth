@@ -13,6 +13,5 @@ module.exports = {
         }
 
         throw new CustomError(403, "Error: Admin role is required for this action");
-        return;
     }
 };

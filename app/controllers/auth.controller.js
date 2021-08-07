@@ -67,6 +67,7 @@ module.exports = {
         await updateOne(id, {refreshToken: ""});
         logger.audit("User's refresh token is being removed from database successfully");
 
+        logger.audit(`User ${id} logged out successfully`);
         res.status(200).send({message: `User ${id} logged out successfully`});
     }
 };

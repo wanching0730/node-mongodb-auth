@@ -1,5 +1,5 @@
 {
-  "name": "ryde",
+  "name": "node-mongodb-auth",
   "version": "1.0.0",
   "description": "Technical assessment - RESTful API with authentication ",
   "main": "server.js",

@@ -29,6 +29,7 @@ initDatabase();
 // routes
 require('./app/routes/auth.routes')(app);
 require('./app/routes/user.routes')(app);
+require('./app/routes/follow.routes')(app);
 
 // error handling
 app.use((err, req, res, next) => {

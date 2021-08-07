@@ -12,7 +12,7 @@ module.exports = {
     // Retrieve and return all users
     findAll: async (req, res) => {
         logger.info("Admin: Retrieving all users");
-        res.send(await findAll());
+        res.status(200).send(await findAll());
     },
 
     // Find a single user with a user ID
@@ -22,7 +22,7 @@ module.exports = {
         const author = req.url.includes("admin") ? "Admin" : res.locals.id;
         logger.info(`${author}: Retrieving one user`);
 
-        res.send(await findOne(id));
+        res.status(200).send(await findOne(id));
     },
 
     // Update a user identified by the user ID in the request

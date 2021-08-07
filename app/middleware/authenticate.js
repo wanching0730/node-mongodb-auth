@@ -12,7 +12,7 @@ const {secret} = require("../config/auth.config");
 
 module.exports = {
     verifyToken: (req, res, next) => {
-        let token = req.headers["authorization"];
+        let token = req.get("authorization");
 
         if (!token) throw new CustomError(403, "Error: Token not found");
 

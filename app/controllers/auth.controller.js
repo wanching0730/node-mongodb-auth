@@ -31,8 +31,8 @@ module.exports = {
         // check user name
         if (!name) throw new CustomError(400, "Error: User name cannot be empty for registration");
 
-        // // check password format
-        // if (!validatePassword(password)) throw new CustomError(400, "Error: Password should be in alphanumeric format");
+        // check password format
+        if (!validatePassword(password)) throw new CustomError(400, "Error: Password should be in alphanumeric format");
 
         // check D.O.B format
         if (!validateDOB(dob)) throw new CustomError(400, "Error: Date of Birth should be in mm/dd/yyyy format");

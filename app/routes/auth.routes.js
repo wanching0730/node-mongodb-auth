@@ -12,8 +12,8 @@ module.exports = function(app) {
         next();
     });
 
-    app.post("/auth/register", [verifyNewUser, verifyRoles], asyncHandler(register));
+    app.post("/auth/register", [asyncHandler(verifyNewUser), asyncHandler(verifyRoles)], asyncHandler(register));
     app.post("/auth/login", asyncHandler(login));
-    app.post("/auth/logout", [verifyToken], asyncHandler(logout));
+    app.post("/auth/logout", [asyncHandler(verifyToken)], asyncHandler(logout));
     app.post("/auth/refreshToken", asyncHandler(refreshToken));
 };

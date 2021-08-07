@@ -24,7 +24,7 @@ describe("Auth Controller", function() {
                 const user = new User({
                     id: "test user id",
                     name: "test user name",
-                    password: "12345",
+                    password: "test12345",
                     dob: "07/30/1997",
                     address: "test user address",
                     description: "test user description"
@@ -41,7 +41,7 @@ describe("Auth Controller", function() {
             try {
                 const user = new User({
                     name: "test user name",
-                    password: "12345",
+                    password: "test12345",
                     dob: "07/30/1997",
                     address: "test user address",
                     description: "test user description"
@@ -58,7 +58,7 @@ describe("Auth Controller", function() {
             try {
                 const user = new User({
                     id: "test user id",
-                    password: "12345",
+                    password: "test12345",
                     dob: "07/30/1997",
                     address: "test user address",
                     description: "test user description"
@@ -71,12 +71,30 @@ describe("Auth Controller", function() {
             }
         });
 
-        it("Should not be able to register user without correct D.O.B format",  async function() {
+        it("Should not be able to register user without correct alphanumeric password format",  async function() {
             try {
                 const user = new User({
                     id: "test user id",
                     name: "test user name",
                     password: "12345",
+                    dob: "30/07/1997",
+                    address: "test user address",
+                    description: "test user description"
+                });
+
+                await register(user, ["admin"]);
+            } catch(err) {
+                expect(err.statusCode).to.equal(400);
+                expect(err.message).to.equal("Error: Password should be in alphanumeric format");
+            }
+        });
+
+        it("Should not be able to register user without correct D.O.B format",  async function() {
+            try {
+                const user = new User({
+                    id: "test user id",
+                    name: "test user name",
+                    password: "test12345",
                     dob: "30/07/1997",
                     address: "test user address",
                     description: "test user description"
@@ -95,7 +113,7 @@ describe("Auth Controller", function() {
             const user = new User({
                 id: "test user id",
                 name: "test user name",
-                password: "12345",
+                password: "test12345",
                 dob: "07/30/1997",
                 address: "test user address",
                 description: "test user description"
@@ -110,7 +128,7 @@ describe("Auth Controller", function() {
             const user = new User({
                 id: "test normal user id",
                 name: "test normal user name",
-                password: "12345",
+                password: "test12345",
                 dob: "07/30/1997",
                 address: "test normal user address",
                 description: "test normal user description"
@@ -127,7 +145,7 @@ describe("Auth Controller", function() {
             try {
                 const credential = {
                     id: null,
-                    password: "12345"
+                    password: "test12345"
                 };
 
                 await login(credential.id, credential.password);
@@ -155,7 +173,7 @@ describe("Auth Controller", function() {
             try {
                 const credential = {
                     id: "wrong user id",
-                    password: "12345"
+                    password: "test12345"
                 };
 
                 await login(credential.id, credential.password);
@@ -184,7 +202,7 @@ describe("Auth Controller", function() {
         it("Should be able to let user login with correct ID and password",  async function() {
             const credential = {
                 id: "test user id",
-                password: "12345"
+                password: "test12345"
             };
 
             const response = await login(credential.id, credential.password);

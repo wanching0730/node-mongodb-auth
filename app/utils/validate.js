@@ -6,7 +6,7 @@ A function for validation
 module.exports = {
     validatePassword: (password) => {
         // password to be alphanumeric
-        let alphanumericRegex = new RegExp(/[^a-z0-9]+/i);
+        let alphanumericRegex = new RegExp(/^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/);
         return alphanumericRegex.test(password);
     },
 

@@ -1,4 +1,3 @@
-const {verifyNewUser, verifyRoles} = require("../middleware/verifyRegistration");
 const {verifyToken} = require("../middleware/authenticate");
 const {login, register, logout, refreshToken} = require("../controllers/auth.controller");
 const {asyncHandler} = require("../utils/error-handler");

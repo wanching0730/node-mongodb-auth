@@ -13,13 +13,13 @@ const User = db.user;
 const {initDatabase} = require("../app/utils/init-database");
 const {register, login} = require("../app/services/auth.service");
 
-before(async function() {
+before(async function () {
     await initDatabase();
 });
 
-describe("Auth Controller", function() {
-    describe("Error response for Register actions", function() {
-        it("Should not be able to register user with invalid roles",  async function() {
+describe("Auth Controller", function () {
+    describe("Error response for Register actions", function () {
+        it("Should not be able to register user with invalid roles", async function () {
             try {
                 const user = new User({
                     id: "test user id",
@@ -31,13 +31,13 @@ describe("Auth Controller", function() {
                 });
 
                 await register(user, ["moderator"]);
-            } catch(err) {
+            } catch (err) {
                 expect(err.statusCode).to.equal(400);
                 expect(err.message).to.equal("Error: Roles provided are invalid");
             }
         });
 
-        it("Should not be able to register user without user ID",  async function() {
+        it("Should not be able to register user without user ID", async function () {
             try {
                 const user = new User({
                     name: "test user name",
@@ -48,13 +48,13 @@ describe("Auth Controller", function() {
                 });
 
                 await register(user, ["admin"]);
-            } catch(err) {
+            } catch (err) {
                 expect(err.statusCode).to.equal(400);
                 expect(err.message).to.equal("Error: User ID cannot be empty for registration");
             }
         });
 
-        it("Should not be able to register user without user name",  async function() {
+        it("Should not be able to register user without user name", async function () {
             try {
                 const user = new User({
                     id: "test user id",
@@ -65,13 +65,13 @@ describe("Auth Controller", function() {
                 });
 
                 await register(user, ["admin"]);
-            } catch(err) {
+            } catch (err) {
                 expect(err.statusCode).to.equal(400);
                 expect(err.message).to.equal("Error: User name cannot be empty for registration");
             }
         });
 
-        it("Should not be able to register user without correct alphanumeric password format",  async function() {
+        it("Should not be able to register user without correct alphanumeric password format", async function () {
             try {
                 const user = new User({
                     id: "test user id",
@@ -83,13 +83,13 @@ describe("Auth Controller", function() {
                 });
 
                 await register(user, ["admin"]);
-            } catch(err) {
+            } catch (err) {
                 expect(err.statusCode).to.equal(400);
                 expect(err.message).to.equal("Error: Password should be in alphanumeric format");
             }
         });
 
-        it("Should not be able to register user without correct D.O.B format",  async function() {
+        it("Should not be able to register user without correct D.O.B format", async function () {
             try {
                 const user = new User({
                     id: "test user id",
@@ -101,15 +101,15 @@ describe("Auth Controller", function() {
                 });
 
                 await register(user, ["admin"]);
-            } catch(err) {
+            } catch (err) {
                 expect(err.statusCode).to.equal(400);
                 expect(err.message).to.equal("Error: Date of Birth should be in mm/dd/yyyy format");
             }
         });
     });
 
-    describe("Success response for Register actions", function() {
-        it("Should be able to register user with valid input with roles",  async function() {
+    describe("Success response for Register actions", function () {
+        it("Should be able to register user with valid input with roles", async function () {
             const user = new User({
                 id: "test user id",
                 name: "test user name",
@@ -124,7 +124,7 @@ describe("Auth Controller", function() {
             expect(response.message).to.equal("User was registered successfully");
         });
 
-        it("Should be able to register user with valid input without roles (as normal user)",  async function() {
+        it("Should be able to register user with valid input without roles (as normal user)", async function () {
             const user = new User({
                 id: "test normal user id",
                 name: "test normal user name",
@@ -140,8 +140,8 @@ describe("Auth Controller", function() {
         });
     });
 
-    describe("Error response for Login actions", function() {
-        it("Should not be able to let user login without ID",  async function() {
+    describe("Error response for Login actions", function () {
+        it("Should not be able to let user login without ID", async function () {
             try {
                 const credential = {
                     id: null,
@@ -149,13 +149,13 @@ describe("Auth Controller", function() {
                 };
 
                 await login(credential.id, credential.password);
-            } catch(err) {
+            } catch (err) {
                 expect(err.statusCode).to.equal(400);
                 expect(err.message).to.equal("Error: User ID cannot be empty for authentication");
             }
         });
 
-        it("Should not be able to let user login without password",  async function() {
+        it("Should not be able to let user login without password", async function () {
             try {
                 const credential = {
                     id: "test user id",
@@ -163,13 +163,13 @@ describe("Auth Controller", function() {
                 };
 
                 await login(credential.id, credential.password);
-            } catch(err) {
+            } catch (err) {
                 expect(err.statusCode).to.equal(400);
                 expect(err.message).to.equal("Error: User password cannot be empty for authentication");
             }
         });
 
-        it("Should not be able to let user login without correct user ID",  async function() {
+        it("Should not be able to let user login without correct user ID", async function () {
             try {
                 const credential = {
                     id: "wrong user id",
@@ -177,13 +177,13 @@ describe("Auth Controller", function() {
                 };
 
                 await login(credential.id, credential.password);
-            } catch(err) {
+            } catch (err) {
                 expect(err.statusCode).to.equal(401);
                 expect(err.message).to.equal("Error: Invalid user");
             }
         });
 
-        it("Should not be able to let user login without password",  async function() {
+        it("Should not be able to let user login without password", async function () {
             try {
                 const credential = {
                     id: "test user id",
@@ -191,15 +191,15 @@ describe("Auth Controller", function() {
                 };
 
                 await login(credential.id, credential.password);
-            } catch(err) {
+            } catch (err) {
                 expect(err.statusCode).to.equal(401);
                 expect(err.message).to.equal("Error: Invalid password");
             }
         });
     });
 
-    describe("Success response for Login actions", function() {
-        it("Should be able to let user login with correct ID and password",  async function() {
+    describe("Success response for Login actions", function () {
+        it("Should be able to let user login with correct ID and password", async function () {
             const credential = {
                 id: "test user id",
                 password: "test12345"

@@ -18,6 +18,7 @@ const logger = require("../utils/logger")(__filename);
 
 module.exports = {
     register: async (user, roles) => {
+        // double check the validation
         if (!user.id) throw new CustomError(400, "Error: User ID cannot be empty for registration");
         if (!user.name) throw new CustomError(400, "Error: User name cannot be empty for registration");
         if (!validatePassword(user.password)) throw new CustomError(400, "Error: Password should be in alphanumeric format");
@@ -51,6 +52,7 @@ module.exports = {
     },
 
     login: async (id, password) => {
+        // double check the validation
         if (!id) throw new CustomError(400, "Error: User ID cannot be empty for authentication");
         if (!password) throw new CustomError(400, "Error: User password cannot be empty for authentication");
 

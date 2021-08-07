@@ -31,7 +31,9 @@ module.exports = {
     },
 
     findNearbyFriends: async(userId, distance) => {
-        let userLocation = await User.findOne({id: userId});
+        const userLocation = await User.findOne({id: userId});
+        let following = await module.exports.findFollowing(userId);
+        following = following.map(f => f.id).filter(f => f.id !== userId);
 
         let nearbyFriends = await User.find({
             $and: [{
@@ -46,8 +48,9 @@ module.exports = {
                 }
             },
             {
-                id: {$ne: userId}
-            }]
+                id: {$in: following}
+            }
+            ]
         });
 
         return (nearbyFriends);

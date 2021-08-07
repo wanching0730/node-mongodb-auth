@@ -4,14 +4,6 @@ const {findAll, findOne, updateOne, deleteOne, deleteAll} = require("../controll
 const {asyncHandler} = require("../utils/error-handler");
 
 module.exports = function(app) {
-    app.use(function(req, res, next) {
-        res.header(
-            "Access-Control-Allow-Headers",
-            "x-access-token, Origin, Content-Type, Accept"
-        );
-        next();
-    });
-
     // routes for normal user: Only can select, update, delete own record only
     app.use("/users", [verifyToken])
     app.get("/users", asyncHandler(findOne));

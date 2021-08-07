@@ -6,7 +6,6 @@ const followingSchema = new mongoose.Schema({
     following_id: String, // the target user's ID that this user is following: required field
 }, { collection: 'following' });
 
-followingSchema.set('timestamps', true);
 const Following = mongoose.model("Following", followingSchema);
 
 module.exports = Following;

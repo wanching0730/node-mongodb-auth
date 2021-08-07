@@ -12,8 +12,8 @@
     "Mongodb",
     "Express",
     "Swagger",
-    "mocha",
-    "chai"
+    "Mocha",
+    "Chai"
   ],
   "author": "cayenne",
   "license": "ISC",

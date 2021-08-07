@@ -8,10 +8,12 @@ const { TokenExpiredError, JsonWebTokenError } = jwt;
 
 const db = require("../models");
 const User = db.user;
+const ROLES = db.ROLES;
 
 const CustomError = require("../utils/custom-error");
 const logger = require("../utils/logger")(__filename);
 
+const {asyncHandler} = require("../utils/error-handler");
 const {validateDOB, validatePassword} = require("../utils/validate");
 const {register, login} = require("../services/auth.service");
 const {updateOne, findOne} = require("../services/user.service");
@@ -21,6 +23,9 @@ module.exports = {
     register: async (req, res) => {
         const author = req.url.includes("admin") ? "Admin" : "User";
         logger.audit(`${author}: Registering new user`);
+
+        await asyncHandler(verifyNewUser(req.body.id));
+        await asyncHandler(verifyRoles(req.body.roles));
 
         const {id, name, password, dob, address, description} = req.body;
 
@@ -106,5 +111,25 @@ module.exports = {
         });
     }
 };
+
+async function verifyNewUser(id) {
+    logger.audit("Verifying new user");
+
+    // check duplicate username
+    const user = await User.findOne({id}).exec();
+
+    if (user) throw new CustomError(400, "Error: User ID is already in used");
+}
+
+async function verifyRoles(roles) {
+    logger.audit("Verifying new user's role");
+
+    // compare the provided role with the roles in our database
+    if (roles) {
+        const validRole = ROLES.some(r => roles.indexOf(r) >= 0);
+
+        if (!validRole) throw new CustomError(400, `Error: Role ${roles[i]} does not exist`);
+    }
+}
 
 

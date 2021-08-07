@@ -12,6 +12,7 @@ const User = db.user;
 
 const {initDatabase} = require("../app/utils/init-database");
 const {register, login} = require("../app/services/auth.service");
+const {findOne} = require("../app/services/user.service");
 
 before(async function () {
     await initDatabase();
@@ -119,9 +120,10 @@ describe("Auth Controller", function () {
                 description: "test user description"
             });
 
-            const response = await register(user, ["admin"]);
-            expect(response.statusCode).to.equal(200);
-            expect(response.message).to.equal("User was registered successfully");
+            await register(user, ["admin"]);
+            let newUser = await findOne("test user id");
+
+            expect(newUser.name).to.equal(user.name);
         });
 
         it("Should be able to register user with valid input without roles (as normal user)", async function () {
@@ -134,9 +136,10 @@ describe("Auth Controller", function () {
                 description: "test normal user description"
             });
 
-            const response = await register(user, null);
-            expect(response.statusCode).to.equal(200);
-            expect(response.message).to.equal("User was registered successfully");
+            await register(user, null);
+            let newUser = await findOne("test normal user id");
+
+            expect(newUser.name).to.equal(user.name);
         });
     });
 

@@ -3,6 +3,9 @@
 2. Login: Check whether user exists in database, verify password, generate an access token and return to user
 */
 
+const jwt = require("jsonwebtoken");
+const { TokenExpiredError, JsonWebTokenError } = jwt;
+
 const db = require("../models");
 const User = db.user;
 
@@ -11,7 +14,8 @@ const logger = require("../utils/logger")(__filename);
 
 const {validateDOB} = require("../utils/validate");
 const {register, login} = require("../services/auth.service");
-const {updateOne} = require("../services/user.service");
+const {updateOne, findOne} = require("../services/user.service");
+const {secret, jwtExpiration, jwtRefreshExpiration} = require("../config/auth.config");
 
 module.exports = {
     register: async (req, res) => {
@@ -69,6 +73,35 @@ module.exports = {
 
         logger.audit(`User ${id} logged out successfully`);
         res.status(200).send({message: `User ${id} logged out successfully`});
+    },
+
+    refreshToken: (req, res) => {
+        return jwt.verify(req.body.refreshToken, secret, async (err, decoded) => {
+            if (err instanceof TokenExpiredError) throw new CustomError(401, "Error: Refresh token was expired");
+            if (err instanceof JsonWebTokenError) throw new CustomError(401, "Error: Invalid refresh token");
+
+            const {id, roles, refreshToken} = await findOne(decoded.id);
+
+            if(refreshToken !== req.body.refreshToken)
+                throw new CustomError(401, "Error: Invalid refresh token");
+
+            // generate new access token with user's ID and user's roles
+            const newToken = jwt.sign({ id: id, roles: roles.map(r => r.name) }, secret, {
+                expiresIn: jwtExpiration
+            });
+
+            // generate new refresh token with user's ID
+            const newRefreshToken = jwt.sign({ id: id }, secret, {
+                expiresIn: jwtRefreshExpiration
+            });
+
+            logger.audit(`New access token and refresh token are generated successfully`);
+
+            await updateOne(id, {refreshToken: newRefreshToken});
+            logger.audit(`New refresh token is updated to database successfully`);
+
+            res.status(200).send({accessToken: newToken, refreshToken: newRefreshToken});
+        });
     }
 };
 

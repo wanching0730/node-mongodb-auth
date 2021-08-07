@@ -1,6 +1,6 @@
 const {verifyNewUser, verifyRoles} = require("../middleware/verifyRegistration");
-const {refreshToken, verifyToken} = require("../middleware/authenticate");
-const {login, register, logout} = require("../controllers/auth.controller");
+const {verifyToken} = require("../middleware/authenticate");
+const {login, register, logout, refreshToken} = require("../controllers/auth.controller");
 
 module.exports = function(app) {
     app.use(function(req, res, next) {

@@ -110,7 +110,7 @@ describe("Auth Controller", function () {
     });
 
     describe("Success response for Register actions", function () {
-        it("Should be able to register user with valid input with roles", async function () {
+        it("Should be able to register user with valid input and roles (as admin)", async function () {
             const user = new User({
                 id: "test user id",
                 name: "test user name",
@@ -144,7 +144,7 @@ describe("Auth Controller", function () {
     });
 
     describe("Error response for Login actions", function () {
-        it("Should not be able to let user login without ID", async function () {
+        it("Should not be able to let user login without user ID", async function () {
             try {
                 const credential = {
                     id: null,
@@ -186,7 +186,7 @@ describe("Auth Controller", function () {
             }
         });
 
-        it("Should not be able to let user login without password", async function () {
+        it("Should not be able to let user login without correct password", async function () {
             try {
                 const credential = {
                     id: "test user id",

@@ -10,13 +10,13 @@ const CustomError = require("../utils/custom-error");
 module.exports = {
     // Retrieve and return all users
     findAll: async () => {
-        const users = await User.find();
+        const users = await User.find({}, { password: 0, refreshToken: 0 });
         return (users);
     },
 
     // Find a single user with a user ID
     findOne: async (id) => {
-        const user = await User.findOne({id})
+        const user = await User.findOne({id}, { password: 0, refreshToken: 0 })
             .populate("roles", "-__v");
 
         if (!user) throw new CustomError(404, `User not found with user ID: ${id}`)

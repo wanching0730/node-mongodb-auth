@@ -42,15 +42,16 @@ require('./app/routes/follow.routes')(app);
 app.use((err, req, res, next) => {
     if (err instanceof CustomError) {
         // handle custom error message
+        logger.error(err.message);
         res.status(err.statusCode).json(err.message);
-        logger.error(err.message)
+
     } else {
         // handle general error message thrown from database
+        logger.error(err); // log the full error message
         res.status(500).json(`Errors occur in database: ${err.message}`);
-        logger.error(err) // log the full error message
     }
     return next();
-})
+});
 
 // set up Swagger for API documentation
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(docs));

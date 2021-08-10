@@ -6,13 +6,13 @@ A function for validation
 module.exports = {
     validatePassword: (password) => {
         // password to be alphanumeric
-        let alphanumericRegex = new RegExp(/^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/);
+        const alphanumericRegex = new RegExp(/^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/);
         return alphanumericRegex.test(password);
     },
 
     validateDOB: (dob) => {
         // D.O.B format in mm/dd/yyyy
-        let dateRegex = new RegExp(/^((0?[1-9]|1[012])[- /.](0?[1-9]|[12][0-9]|3[01])[- /.](19|20)?[0-9]{2})*$/);
+        const dateRegex = new RegExp(/^((0?[1-9]|1[012])[- /.](0?[1-9]|[12][0-9]|3[01])[- /.](19|20)?[0-9]{2})*$/);
         return dateRegex.test(dob);
     }
 };

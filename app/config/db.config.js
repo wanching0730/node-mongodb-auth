@@ -1,4 +1,4 @@
-require('dotenv').config()
+require('dotenv').config();
 
 // configure MongoDB
 module.exports = {

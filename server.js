@@ -11,10 +11,9 @@ const logger = require("./app/utils/logger")(__filename);
 
 const app = express();
 
-let corsOptions = {
+const corsOptions = {
     origin: `http://localhost:${process.env.PORT}`
 };
-
 app.use(cors(corsOptions));
 
 app.use(function(req, res, next) {

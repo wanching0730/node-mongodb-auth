@@ -16,7 +16,7 @@ module.exports = {
 
     // Find a single user with a user ID
     findOne: async (id) => {
-        const user = await User.findOne({id}, { password: 0, refreshToken: 0 })
+        const user = await User.findOne({id}, { password: 0 })
             .populate("roles", "-__v");
 
         if (!user) throw new CustomError(404, `User not found with user ID: ${id}`)
